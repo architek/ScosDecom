@@ -3,7 +3,7 @@
 #
 #         FILE: CsvHash.pm
 #
-#  DESCRIPTION: 
+#  DESCRIPTION: Used to read csv file to store it into a hash of hash
 #
 #        FILES: ---
 #         BUGS: ---
@@ -22,16 +22,16 @@ use strict;
 
 =head1 NAME
 
-Ccsds - Module used to 
+CsvHash - Module used to store csv file into a hash
 
 =cut
 
 use Moo;
 extends 'ScosDecom::Db::Csv';
 
-has 'index' => ( is=>'ro');
-has 'filename' => ( is=>'ro');
-has 'keys' => ( is=>'ro');
+has 'index'     => ( is=>'ro');
+has 'filename'  => ( is=>'ro');
+has 'keys'      => ( is=>'ro');
 
 sub _build_csv {
     my $self=shift;
@@ -54,7 +54,7 @@ sub _build_csv {
 
 =head1 SYNOPSIS
 
-This library allows 
+This library allows reading csv files and store them in a hash, indexed by one of the column. Typically for 1-1 relations.
 
 =head1 AUTHOR
 
@@ -68,7 +68,7 @@ Please report any bugs or feature requests to C<teebeenator at gmail.com>
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc TEMPLATE
+    perldoc ScosDecom::Db::CsvHash 
 
 
 =head1 LICENSE AND COPYRIGHT

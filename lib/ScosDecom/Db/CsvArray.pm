@@ -1,50 +1,34 @@
 #
 #===============================================================================
 #
-#         FILE: Csv.pm
+#         FILE: CsvArray.pm
 #
-#  DESCRIPTION: Used to split csv line into a hash
+#  DESCRIPTION: Used to read csv file to store it into a hash of arrays
 #
 #        FILES: ---
 #         BUGS: ---
 #        NOTES: ---
-#       AUTHOR: Laurent Kislaire
+#       AUTHOR: YOUR NAME (), 
 #      COMPANY: 
 #      VERSION: 1.0
-#      CREATED: 28/11/2011 00:44:20
+#      CREATED: 28/11/2011 21:35:19
 #     REVISION: ---
 #===============================================================================
 
-package ScosDecom::Db::Csv;
+package TEMPLATE;
 
 use warnings;
 use strict;
 
 =head1 NAME
 
-Csv - Module used to parse csv line
+CsvArray - Module used to store csv file into an hash of arrays
 
 =cut
 
-use Moo;
-
-has 'fields' => ( 
-    is=>'ro',
-    builder=>'_build_csv',
-    );
-
-sub _csv_name { 
-    my $self=shift;
-    my ($line,$names) = @_;
-    my @val=split m/\t/, $line;
-    my %hash;
-    @hash{@$names}=@val;
-    return \%hash;
-}
-
 =head1 SYNOPSIS
 
-This library allows reading a csv line and storing elements in a hash
+This library allows reading csv files and store them in a hash (indexed by one of the columns) of arrays. Usefull when the index column appears several times. Typically for 1-n relations.
 
 =head1 AUTHOR
 
@@ -58,7 +42,7 @@ Please report any bugs or feature requests to C<teebeenator at gmail.com>
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc ScosDecom::Db::Csv
+    perldoc TEMPLATE
 
 
 =head1 LICENSE AND COPYRIGHT
