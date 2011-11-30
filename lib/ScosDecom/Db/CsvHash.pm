@@ -8,8 +8,8 @@
 #        FILES: ---
 #         BUGS: ---
 #        NOTES: ---
-#       AUTHOR: YOUR NAME (), 
-#      COMPANY: 
+#       AUTHOR: YOUR NAME (),
+#      COMPANY:
 #      VERSION: 1.0
 #      CREATED: 28/11/2011 00:44:20
 #     REVISION: ---
@@ -31,7 +31,7 @@ extends 'ScosDecom::Db::Csv';
 
 #self, table, indexval, $fields
 sub _add_elt {
-    $_[1]->{$_[2]}=$_[3];
+    $_[1]->{ $_[2] } = $_[3];
 }
 
 =head1 SYNOPSIS
@@ -66,5 +66,5 @@ See http://dev.perl.org/licenses/ for more information.
 
 =cut
 
-1; 
+1;
 

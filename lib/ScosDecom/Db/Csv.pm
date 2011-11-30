@@ -9,7 +9,7 @@
 #         BUGS: ---
 #        NOTES: ---
 #       AUTHOR: Laurent Kislaire
-#      COMPANY: 
+#      COMPANY:
 #      VERSION: 1.0
 #      CREATED: 28/11/2011 00:44:20
 #     REVISION: ---
@@ -27,34 +27,37 @@ Csv - Module used to parse csv line
 =cut
 
 use Moo;
-has 'index'     => ( is=>'ro');
-has 'filename'  => ( is=>'ro');
-has 'keys'      => ( is=>'ro');
-has 'fields' => ( is=>'ro', builder=>'_build_csv');
+has 'index'    => ( is => 'ro' );
+has 'filename' => ( is => 'ro' );
+has 'keys'     => ( is => 'ro' );
+has 'fields'   => ( is => 'ro', builder => '_build_csv' );
 
-sub _csv_name { 
-    my $self=shift;
-    my ($line,$names) = @_;
-    my @val=split m/\t/, $line;
+sub _csv_name {
+    my $self = shift;
+    my ( $line, $names ) = @_;
+    my @val = split m/\t/, $line;
     my %hash;
-    @hash{@$names}=@val;
+    @hash{@$names} = @val;
     return \%hash;
 }
 
 sub _build_csv {
-    my $self=shift;
-    my ($filename,$key,$keys)=($self->filename,$self->index,$self->keys);
+    my $self = shift;
+    my ( $filename, $key, $keys ) =
+      ( $self->filename, $self->index, $self->keys );
 
-    my ($file,$hash);
-    open($file, '<' , $filename ) or die "can't open file $filename\n";
-    while (<$file>) { 
+    my ( $file, $hash );
+    open( $file, '<', $filename ) or die "can't open file $filename\n";
+    while (<$file>) {
         s/\r//g;
         chomp;
-        my $fields = $self->_csv_name($_, $keys);
-        my $index=$fields->{$key};
-        die "$key is not a key of hash, available are:",join(',',keys %$fields) unless exists $fields->{$key};
+        my $fields = $self->_csv_name( $_, $keys );
+        my $index = $fields->{$key};
+        die "$key is not a key of hash, available are:",
+          join( ',', keys %$fields )
+          unless exists $fields->{$key};
         delete $fields->{$key};
-        $self->_add_elt($hash,$index,$fields);
+        $self->_add_elt( $hash, $index, $fields );
     }
     return $hash;
 }
@@ -91,5 +94,5 @@ See http://dev.perl.org/licenses/ for more information.
 
 =cut
 
-1; 
+1;
 
