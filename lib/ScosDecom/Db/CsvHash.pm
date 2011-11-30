@@ -29,28 +29,10 @@ CsvHash - Module used to store csv file into a hash
 use Moo;
 extends 'ScosDecom::Db::Csv';
 
-has 'index'     => ( is=>'ro');
-has 'filename'  => ( is=>'ro');
-has 'keys'      => ( is=>'ro');
-
-sub _build_csv {
-    my $self=shift;
-    my ($filename,$key,$keys)=($self->filename,$self->index,$self->keys);
-
-    my ($file,%table);
-    open($file, '<' , $filename ) or die "can't open file $filename\n";
-    while (<$file>) { 
-        s/\r//g;
-        chomp;
-        my $fields = $self->_csv_name($_, $keys);
-        my $index=$fields->{$key};
-        die "$key is not a key of hash, available are:",join(',',keys %$fields) unless exists $fields->{$key};
-        delete $fields->{$key};
-        $table{$index}=$fields;
-    }
-    return \%table;
+#self, table, indexval, $fields
+sub _add_elt {
+    $_[1]->{$_[2]}=$_[3];
 }
-
 
 =head1 SYNOPSIS
 

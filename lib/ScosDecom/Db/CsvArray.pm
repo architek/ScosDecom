@@ -15,7 +15,7 @@
 #     REVISION: ---
 #===============================================================================
 
-package TEMPLATE;
+package ScosDecom::Db::CsvArray;
 
 use warnings;
 use strict;
@@ -25,6 +25,14 @@ use strict;
 CsvArray - Module used to store csv file into an hash of arrays
 
 =cut
+
+use Moo;
+extends 'ScosDecom::Db::Csv';
+
+#self, table, indexval, $fields
+sub _add_elt {
+    push @{$_[1]->{$_[2]}},$_[3];
+}
 
 =head1 SYNOPSIS
 
