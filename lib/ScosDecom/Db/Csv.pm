@@ -30,7 +30,7 @@ use Moo;
 has 'index'    => ( is => 'ro' );
 has 'filename' => ( is => 'ro' );
 has 'keys'     => ( is => 'ro' );
-has 'fields'   => ( is => 'ro', builder => '_build_csv' );
+has 'fields'   => ( is => 'ro', builder => 'build_csv' );
 
 sub _csv_name {
     my $self = shift;
@@ -41,7 +41,7 @@ sub _csv_name {
     return \%hash;
 }
 
-sub _build_csv {
+sub build_csv {
     my $self = shift;
     my ( $filename, $key, $keys ) =
       ( $self->filename, $self->index, $self->keys );
@@ -52,11 +52,14 @@ sub _build_csv {
         s/\r//g;
         chomp;
         my $fields = $self->_csv_name( $_, $keys );
-        my $index = $fields->{$key};
-        die "$key is not a key of hash, available are:",
-          join( ',', keys %$fields )
-          unless exists $fields->{$key};
-        delete $fields->{$key};
+        my $index;
+        if ($key) {
+            $index = $fields->{$key};
+            die "$key is not a key of hash, available are:",
+              join( ',', keys %$fields )
+              unless exists $fields->{$key};
+            delete $fields->{$key};
+        }
         $self->_add_elt( $hash, $index, $fields );
     }
     return $hash;
