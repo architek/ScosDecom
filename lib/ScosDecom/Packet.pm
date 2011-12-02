@@ -3,13 +3,13 @@
 #
 #         FILE: Packet.pm
 #
-#  DESCRIPTION: 
+#  DESCRIPTION:
 #
 #        FILES: ---
 #         BUGS: ---
 #        NOTES: ---
-#       AUTHOR: YOUR NAME (), 
-#      COMPANY: 
+#       AUTHOR: YOUR NAME (),
+#      COMPANY:
 #      VERSION: 1.0
 #      CREATED: 21/11/2011 23:28:29
 #     REVISION: ---
@@ -22,47 +22,17 @@ use strict;
 
 =head1 NAME
 
-Packet - Polymorph class that can be derived in TMPacket and TCPacket
+Packet - Generic packet class
 
 =cut
 
-sub new {
-    my $proto=shift;
-    my $class=ref($proto)||$proto;
-    my $self={};
-    my $type=shift;
-    my ($raw,$decoded)=@_;
-    my %def_attrs = (
-        raw => $raw,
-        decoded => $decoded,
-    );
-    if ( $type ) { 
-      $type= __PACKAGE__ . "::$type";
-      eval " use $type; " ;
-      die $@ if $@;
-      $self= new $type;
-      for my $key (keys %def_attrs){
-        $self->{$key} = $def_attrs{$key} if not $self->{$key};
-      }
-      bless $self,$type;
-    } else {
-      bless $self,$class; 
-      return $self;
-    }
-}
-sub mdecode {
-    my $self=shift;
-    print "Packet::decode\n";
-    &{$self->{decoder}};
-}
-
-#require Exporter;
-#our @ISA = qw(Exporter);
-#our @EXPORT = qw($VERSION);
+use Moo;
+has 'raw' => ( is => 'ro' );
+has 'mib'  => ( is => 'ro' );
 
 =head1 SYNOPSIS
 
-This library allows 
+This library defines generic packet interface used for decoding TM/TC or encoding TC packets
 
 =head1 AUTHOR
 
@@ -76,7 +46,7 @@ Please report any bugs or feature requests to C<teebeenator at gmail.com>
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc TEMPLATE
+    perldoc ScosDecom::Packet
 
 
 =head1 LICENSE AND COPYRIGHT
@@ -92,5 +62,5 @@ See http://dev.perl.org/licenses/ for more information.
 
 =cut
 
-1; 
+1;
 
