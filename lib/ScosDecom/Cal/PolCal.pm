@@ -1,39 +1,44 @@
 #
 #===============================================================================
 #
-#         FILE: NumCal.pm
+#         FILE: PolCal.pm
 #
-#  DESCRIPTION: Numerical Calibration
+#  DESCRIPTION: Polynonmial Calibration
 #
 #        FILES: ---
 #         BUGS: ---
 #        NOTES: ---
-#       AUTHOR: YOUR NAME (), 
-#      COMPANY: 
+#       AUTHOR: YOUR NAME (),
+#      COMPANY:
 #      VERSION: 1.0
 #      CREATED: 04/12/2011 01:24:21
 #     REVISION: ---
 #===============================================================================
 
-package ScosDecom::Cal::NumCal;
+package ScosDecom::Cal::PolCal;
 
 use warnings;
 use strict;
 
 =head1 NAME
 
-Ccsds - Module used to return numeric interpolated values out of raw param
+Ccsds - Module used to return numeric polynomial calculated values out of raw param
 
 =cut
-use Moo;
-use Math::Interpolate;
 
-has 'caf' => (is=>'ro');
+use Moo;
+
+has 'mcf' => ( is => 'ro' );
 
 sub calc {
-    my ($self,$val)=@_;
-    #FIXME always extrapolating
-    return (Math::Interpolate::linear_interpolate($val,$self->caf->{xvals},$self->caf->{yvals}))[0];
+    my ( $self, $val ) = @_;
+
+    return $self->mcf->{mcf_pol1} +
+      $self->mcf->{mcf_pol2} * $val +
+      $self->mcf->{mcf_pol3} * $val * $val +
+      $self->mcf->{mcf_pol4} * $val * $val * $val +
+      $self->mcf->{mcf_pol5} * $val * $val * $val * $val;
+
 }
 
 =head1 SYNOPSIS
@@ -52,7 +57,7 @@ Please report any bugs or feature requests to C<teebeenator at gmail.com>
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc ScosDecom::Cal::NumCal
+    perldoc ScosDecom::Cal::PolCal
 
 
 =head1 LICENSE AND COPYRIGHT
@@ -68,5 +73,5 @@ See http://dev.perl.org/licenses/ for more information.
 
 =cut
 
-1; 
+1;
 

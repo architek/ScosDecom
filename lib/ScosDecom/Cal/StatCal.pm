@@ -1,9 +1,9 @@
 #
 #===============================================================================
 #
-#         FILE: NumCal.pm
+#         FILE: StatCal.pm
 #
-#  DESCRIPTION: Numerical Calibration
+#  DESCRIPTION: Textual Calibration
 #
 #        FILES: ---
 #         BUGS: ---
@@ -15,25 +15,26 @@
 #     REVISION: ---
 #===============================================================================
 
-package ScosDecom::Cal::NumCal;
+package ScosDecom::Cal::StatCal;
 
 use warnings;
 use strict;
 
 =head1 NAME
 
-Ccsds - Module used to return numeric interpolated values out of raw param
+Ccsds - Module used to return textual values out of raw param
 
 =cut
 use Moo;
-use Math::Interpolate;
 
-has 'caf' => (is=>'ro');
+has 'txp' => (is=>'ro');
 
 sub calc {
     my ($self,$val)=@_;
-    #FIXME always extrapolating
-    return (Math::Interpolate::linear_interpolate($val,$self->caf->{xvals},$self->caf->{yvals}))[0];
+    for my $ltxp (@{$self->txp}) {
+        return $ltxp->{txp_altxt} if ($val>=$ltxp->{txp_from} && $val<=$ltxp->{txp_to}); 
+    }
+    return "(Out of cal)";
 }
 
 =head1 SYNOPSIS
@@ -52,7 +53,7 @@ Please report any bugs or feature requests to C<teebeenator at gmail.com>
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc ScosDecom::Cal::NumCal
+    perldoc ScosDecom::Cal::StatCal
 
 
 =head1 LICENSE AND COPYRIGHT
