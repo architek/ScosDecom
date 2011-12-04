@@ -28,7 +28,7 @@ Packet - Generic packet class
 
 use Moo;
 has 'raw' => ( is => 'ro' );
-has 'mib'  => ( is => 'ro' );
+has 'mib' => ( is => 'ro' );
 
 =head1 SYNOPSIS
 
