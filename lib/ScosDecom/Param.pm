@@ -15,26 +15,24 @@
 #     REVISION: ---
 #===============================================================================
 
-package CcsdsDecom::Param;
+package ScosDecom::Param;
 
 use warnings;
 use strict;
 
-
-
 =head1 NAME
 
-Ccsds - Module used to 
+Ccsds - Module used to handle generic parameters
 
 =cut
 
-require Exporter;
-our @ISA = qw(Exporter);
-our @EXPORT = qw($VERSION);
+use Moo;
+
+has 'mib' => ( is=>'ro' );
 
 =head1 SYNOPSIS
 
-This library allows 
+This library allows handling generic parameters: tc paramers and tm parameters
 
 =head1 AUTHOR
 
@@ -48,7 +46,7 @@ Please report any bugs or feature requests to C<teebeenator at gmail.com>
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc TEMPLATE
+    perldoc ScosDecom::Param
 
 
 =head1 LICENSE AND COPYRIGHT
