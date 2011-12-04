@@ -85,7 +85,7 @@ sub to_eng {
     my ( $self, $val ) = @_;
 
     my $eng = $val;
-#    $eng = sprintf( "0x%X", $val ) if looks_like_number($val);
+    $eng = sprintf( "0x%X", $val ) if looks_like_number($val);
 
     my $cur = $self->pcf->{pcf_curtx};
     if ( $self->pcf->{pcf_categ} eq 'S' ) {
