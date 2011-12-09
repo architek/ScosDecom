@@ -9,6 +9,7 @@ build_requires 'Test::More';
 requires 'Math::Interpolate'    => '0';
 requires 'Moo'                  => '0';
 requires 'Ccsds'                => '0';
+requires 'Tree'                 => '0';
 
 test => { TESTS => 
 #        q[t/00-load.t t/boilerplate.t t/pod.t t/01-crc.t t/02-decode.t] 

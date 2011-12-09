@@ -22,6 +22,8 @@ use strict;
 
 use Moo;
 use ScosDecom::Db::FieldsDef;
+use ScosDecom::Db::Pic;
+use Tree;
 extends 'ScosDecom::Db::CsvHash';
 
 has 'tree' => (
@@ -29,7 +31,8 @@ has 'tree' => (
     lazy    => 1,
     builder => '_new_tree',
 );
-has 'pic' => ( is => 'rw' );
+has 'pic' => ( is => 'rw', 
+                lazy => 1);
 
 around BUILDARGS => sub {
     my $orig  = shift;
@@ -42,20 +45,12 @@ around BUILDARGS => sub {
     );
 };
 
-sub _get_pic {
-    my ( $self, $type, $stype ) = @_;
-
-    # No pic found for type subtype
-    return undef;
-}
-
 #Pic optionnal selection tree
 sub pic_tree {
     my ( $self, $node, $type, $subtype ) = @_;
-    my $node;
 
-    for ( $self->pic->fields ) {
-        if ( $type == $_->{pic_type} and $subtype == $_->{pic_subtype} ) {
+    for ( @{$self->pic->fields} ) {
+        if ( $type == $_->{pic_type} and $subtype == $_->{pic_stype} ) {
 
             #apid as next hybrid selector:
             my $pic_apid = "";
@@ -80,17 +75,17 @@ sub pic_tree {
 #FIXME used cpan module
 sub _new_tree {
     my $self = shift;
-    $self->pic  = new ScosDecom::Db::Pic->new();
-    $self->tree = Tree->new("root");
+    $self->pic(ScosDecom::Db::Pic->new);
+    my $tree=Tree->new("root");
     my ( $parent, $node );
     for ( keys $self->fields() ) {
         my $pid   = $self->fields->{$_};
         my $apid  = $pid->{pid_apid};
-        my $type  = $pid->{type};
-        my $stype = $pid->{stype};
+        my $type  = $pid->{pid_type};
+        my $subtype = $pid->{pid_stype};
         my $pi1v  = $pid->{pid_pi1_val};
         my $pi2v  = $pid->{pid_pi2_val};
-        $parent = $self->tree;
+        $parent = $tree;
 
         #create apid node unless already exist
         $node = undef;
@@ -117,17 +112,18 @@ sub _new_tree {
         $parent = $node;
         $node   = undef;
         for ( $parent->children ) {
-            $node = $_ if $_->value == $stype;
+            $node = $_ if $_->value == $subtype;
         }
         unless ($node) {
-            $node = Tree->new($stype);
+            $node = Tree->new($subtype);
             $parent->add_child($node);
         }
 
         #Add pic optional children for t,st
-        pic_tree( $node, $type, $subtype );
+        $self->pic_tree( $node, $type, $subtype );
 
     }
+    $tree;
 }
 
 1;
