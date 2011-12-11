@@ -33,6 +33,7 @@ use ScosDecom::Db::Cdf;
 use ScosDecom::Db::Cpc;
 use ScosDecom::Db::Mcf;
 use ScosDecom::Db::Pcf;
+use ScosDecom::Db::Pic;
 use ScosDecom::Db::Pid;
 use ScosDecom::Db::Plf;
 use ScosDecom::Db::Tpcf;
@@ -46,6 +47,7 @@ has 'Cdf'=>( is      => 'rw',builder=>'_build_Cdf');
 has 'Cpc'=>( is      => 'rw',builder=>'_build_Cpc');
 has 'Mcf'=>( is      => 'rw',builder=>'_build_Mcf');
 has 'Pcf'=>( is      => 'rw',builder=>'_build_Pcf');
+has 'Pic'=>( is      => 'rw',builder=>'_build_Pic');
 has 'Pid'=>( is      => 'rw',builder=>'_build_Pid');
 has 'Plf'=>( is      => 'rw',builder=>'_build_Plf');
 has 'Tpcf'=>( is      => 'rw',builder=>'_build_Tpcf');
@@ -59,6 +61,7 @@ sub _build_Cdf { ScosDecom::Db::Cdf->new  }
 sub _build_Cpc { ScosDecom::Db::Cpc->new  }
 sub _build_Mcf { ScosDecom::Db::Mcf->new  }
 sub _build_Pcf { ScosDecom::Db::Pcf->new  }
+sub _build_Pic { ScosDecom::Db::Pic->new  }
 sub _build_Pid { ScosDecom::Db::Pid->new  }
 sub _build_Plf { ScosDecom::Db::Plf->new  }
 sub _build_Tpcf{ ScosDecom::Db::Tpcf->new }
