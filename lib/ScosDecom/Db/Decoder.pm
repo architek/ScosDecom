@@ -47,7 +47,7 @@ sub decode {
 
     $res->{header} = $self->encode_res_header($tm);
 
-    #detect tm/tc based on tm->{Packet Header}{'Packet Id'}{Apid}{Pcat}
+    #detect tm/tc based on tm->{Packet Header}->{'Packet Id'}->{Apid}->{Pcat}
     my $spid = $self->identify( $tm, $raw );
     if ( exists $self->mib->Plf->fields->{$spid} ) {
         $res->{packet} =
