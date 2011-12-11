@@ -20,7 +20,7 @@ package ScosDecom::Db::Vpd;
 use warnings;
 use strict;
 
-use Moo;
+use Mouse;
 use ScosDecom::Db::FieldsDef;
 extends 'ScosDecom::Db::CsvArray';
 

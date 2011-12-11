@@ -26,7 +26,7 @@ Csv - Module used to parse csv line
 
 =cut
 
-use Moo;
+use Mouse;
 has 'index'    => ( is => 'ro' );
 has 'filename' => ( is => 'ro' );
 has 'keys'     => ( is => 'ro' );

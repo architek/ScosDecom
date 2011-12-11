@@ -26,7 +26,7 @@ TMPacketFix
 
 =cut
 
-use Moo;
+use Mouse;
 extends 'ScosDecom::TMPacket';
 use ScosDecom::TMParam;
 use Tie::IxHash;

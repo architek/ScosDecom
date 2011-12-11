@@ -25,7 +25,7 @@ use strict;
 Ccsds - Module used to return numeric interpolated values out of raw param
 
 =cut
-use Moo;
+use Mouse;
 use Math::Interpolate;
 
 has 'caf' => (is=>'ro');

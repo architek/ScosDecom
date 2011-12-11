@@ -20,7 +20,7 @@ package ScosDecom::Db::Pid;
 use warnings;
 use strict;
 
-use Moo;
+use Mouse;
 use ScosDecom::Db::FieldsDef;
 use ScosDecom::Db::Pic;
 extends 'ScosDecom::Db::CsvHash';

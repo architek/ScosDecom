@@ -26,7 +26,7 @@ TMPacket
 
 =cut
 
-use Moo;
+use Mouse;
 extends 'ScosDecom::Packet';
 
 has 'tm'  => ( is => 'ro' );

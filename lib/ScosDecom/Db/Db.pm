@@ -26,7 +26,7 @@ Ccsds - Module used to load MIB files into objects
 
 =cut
 
-use Moo;
+use Mouse;
 use ScosDecom::Db::Caf; 
 use ScosDecom::Db::Ccf;
 use ScosDecom::Db::Cdf;

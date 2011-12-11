@@ -26,7 +26,7 @@ Ccsds - Module used to handle generic parameters
 
 =cut
 
-use Moo;
+use Mouse;
 
 has 'mib' => ( is=>'ro' );
 

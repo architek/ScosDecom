@@ -26,7 +26,7 @@ Packet - Generic packet class
 
 =cut
 
-use Moo;
+use Mouse;
 has 'raw' => ( is => 'ro' );
 has 'mib' => ( is => 'ro' );
 

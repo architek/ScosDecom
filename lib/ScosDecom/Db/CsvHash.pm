@@ -26,7 +26,7 @@ CsvHash - Module used to store csv file into a hash
 
 =cut
 
-use Moo;
+use Mouse;
 extends 'ScosDecom::Db::Csv';
 
 #self, table, indexval, $fields

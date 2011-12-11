@@ -26,7 +26,7 @@ CsvArray - Module used to store csv file into an hash of arrays
 
 =cut
 
-use Moo;
+use Mouse;
 extends 'ScosDecom::Db::Csv';
 
 #self, table, indexval, $fields

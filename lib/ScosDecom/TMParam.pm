@@ -33,7 +33,7 @@ use ScosDecom::Cal::StatCal;
 use ScosDecom::Cal::NumCal;
 use ScosDecom::Cal::PolCal;
 
-use Moo;
+use Mouse;
 extends 'ScosDecom::Param';
 
 has 'pcf' => ( is => 'ro' );

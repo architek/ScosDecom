@@ -26,7 +26,7 @@ Ccsds - Factory Module for building packets and identify them
 
 =cut
 
-use Moo;
+use Mouse;
 use ScosDecom::TMPacketFix;
 use ScosDecom::TMPacketVPD;
 use ScosDecom::Utils;

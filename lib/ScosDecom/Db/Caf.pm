@@ -20,7 +20,7 @@ package ScosDecom::Db::Caf;
 use warnings;
 use strict;
 
-use Moo;
+use Mouse;
 use ScosDecom::Db::FieldsDef;
 use ScosDecom::Db::Cap;
 extends 'ScosDecom::Db::CsvHash';

@@ -26,7 +26,7 @@ TMPacketVPD
 
 =cut
 
-use Moo;
+use Mouse;
 extends 'ScosDecom::TMPacket';
 use ScosDecom::TMParam;
 use ScosDecom::Utils;

@@ -26,7 +26,7 @@ Ccsds - Module used to return numeric polynomial calculated values out of raw pa
 
 =cut
 
-use Moo;
+use Mouse;
 
 has 'mcf' => ( is => 'ro' );
 

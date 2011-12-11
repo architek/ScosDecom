@@ -7,7 +7,7 @@ license  'perl';
 
 build_requires 'Test::More';
 requires 'Math::Interpolate'    => '0';
-requires 'Moo'                  => '0';
+requires 'Mouse'                => '0';
 requires 'Ccsds'                => '0';
 
 test => { TESTS => 

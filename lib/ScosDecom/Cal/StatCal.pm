@@ -25,7 +25,7 @@ use strict;
 Ccsds - Module used to return textual values out of raw param
 
 =cut
-use Moo;
+use Mouse;
 
 has 'txp' => (is=>'ro');
 
