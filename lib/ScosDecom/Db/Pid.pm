@@ -48,7 +48,7 @@ sub _new_tree {
 
     my $tree;
     for ( keys $self->fields ) {
-        my $pid = $self->fields->{$_};
+        my $pid   = $self->fields->{$_};
         my $apid  = $pid->{pid_apid};
         my $type  = $pid->{pid_type};
         my $stype = $pid->{pid_stype};

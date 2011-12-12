@@ -118,8 +118,9 @@ sub tc_get_type_stype {
 }
 
 require Exporter;
-our @ISA    = qw(Exporter);
-our @EXPORT = qw(extract_bitstream bin2dec ScosType2BitLen tm_get_type_stype tc_get_type_stype);
+our @ISA = qw(Exporter);
+our @EXPORT =
+  qw(extract_bitstream bin2dec ScosType2BitLen tm_get_type_stype tc_get_type_stype);
 
 =head1 SYNOPSIS
 

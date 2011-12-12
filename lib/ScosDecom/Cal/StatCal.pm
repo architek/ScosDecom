@@ -8,8 +8,8 @@
 #        FILES: ---
 #         BUGS: ---
 #        NOTES: ---
-#       AUTHOR: YOUR NAME (), 
-#      COMPANY: 
+#       AUTHOR: YOUR NAME (),
+#      COMPANY:
 #      VERSION: 1.0
 #      CREATED: 04/12/2011 01:24:21
 #     REVISION: ---
@@ -25,14 +25,16 @@ use strict;
 Ccsds - Module used to return textual values out of raw param
 
 =cut
+
 use Mouse;
 
-has 'txp' => (is=>'ro');
+has 'txp' => ( is => 'ro' );
 
 sub calc {
-    my ($self,$val)=@_;
-    for my $ltxp (@{$self->txp}) {
-        return $ltxp->{txp_altxt} if ($val>=$ltxp->{txp_from} && $val<=$ltxp->{txp_to}); 
+    my ( $self, $val ) = @_;
+    for my $ltxp ( @{ $self->txp } ) {
+        return $ltxp->{txp_altxt}
+          if ( $val >= $ltxp->{txp_from} && $val <= $ltxp->{txp_to} );
     }
     return "(Out of cal)";
 }
@@ -69,5 +71,5 @@ See http://dev.perl.org/licenses/ for more information.
 
 =cut
 
-1; 
+1;
 

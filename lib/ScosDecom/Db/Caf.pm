@@ -40,7 +40,7 @@ around BUILDARGS => sub {
 sub BUILD {
     my $self = shift;
     my $cap  = ScosDecom::Db::Cap->new;
-    for my $rcaf ( keys %{$self->fields} ) {
+    for my $rcaf ( keys %{ $self->fields } ) {
         for my $rcap ( @{ $cap->fields->{$rcaf} } ) {
             push @{ $self->fields->{$rcaf}->{xvals} }, $rcap->{cap_xvals};
             push @{ $self->fields->{$rcaf}->{yvals} }, $rcap->{cap_yvals};

@@ -3,13 +3,13 @@
 #
 #         FILE: TMPacket.pm
 #
-#  DESCRIPTION: 
+#  DESCRIPTION:
 #
 #        FILES: ---
 #         BUGS: ---
 #        NOTES: ---
-#       AUTHOR: YOUR NAME (), 
-#      COMPANY: 
+#       AUTHOR: YOUR NAME (),
+#      COMPANY:
 #      VERSION: 1.0
 #      CREATED: 23/11/2011 23:00:23
 #     REVISION: ---
@@ -29,7 +29,7 @@ TMPacket
 use Mouse;
 extends 'ScosDecom::Packet';
 
-has 'tm'  => ( is => 'ro' );
+has 'tm' => ( is => 'ro' );
 sub decode { print "Wrong decode called: TMPacket"; }
 
 =head1 SYNOPSIS
@@ -64,5 +64,5 @@ See http://dev.perl.org/licenses/ for more information.
 
 =cut
 
-1; 
+1;
 

@@ -46,10 +46,10 @@ sub decode {
     my $val = $self->get_param_val( $raw, $offby, $offbi );
     my $e_val = $self->to_eng($val);
 
-    $res->{descr}=$self->pcf->{pcf_descr};
-    $res->{e_val}=$e_val;
-    $res->{unit}=$self->pcf->{pcf_unit};
-    $res->{val}=$val;
+    $res->{descr} = $self->pcf->{pcf_descr};
+    $res->{e_val} = $e_val;
+    $res->{unit}  = $self->pcf->{pcf_unit};
+    $res->{val}   = $val;
     $val;
 }
 
@@ -91,21 +91,31 @@ sub to_eng {
     if ( $self->pcf->{pcf_categ} eq 'S' ) {
 
         #index is in txf, cal must exist
-        my $cal=ScosDecom::Cal::StatCal->new(txp=>$self->mib->Txp->fields->{$cur});
-        $eng=$cal->calc($val);
+        my $cal =
+          ScosDecom::Cal::StatCal->new(
+            txp => $self->mib->Txp->fields->{$cur} );
+        $eng = $cal->calc($val);
 
     }
     elsif ( $self->pcf->{pcf_categ} eq 'N' ) {
 
         #index is in caf, mcf or lgf or empty or pcf 6,7,9,10
         #for 7,9,10: no curtx should be found
-        unless ($self->pcf->{ptc} == 7 or $self->pcf->{ptc} == 9 or $self->pcf->{ptc} == 10) {
-            if (exists $self->mib->Caf->fields->{$cur}) {
-                my $cal=ScosDecom::Cal::NumCal->new(caf=>$self->mib->Caf->fields->{$cur});
-                $eng=$cal->calc($val);
-            } elsif (exists $self->mib->Mcf->fields->{$cur}) {
-                my $cal=ScosDecom::Cal::PolCal->new(mcf=>$self->mib->Mcf->fields->{$cur});
-                $eng=$cal->calc($val);
+        unless ( $self->pcf->{ptc} == 7
+            or $self->pcf->{ptc} == 9
+            or $self->pcf->{ptc} == 10 )
+        {
+            if ( exists $self->mib->Caf->fields->{$cur} ) {
+                my $cal =
+                  ScosDecom::Cal::NumCal->new(
+                    caf => $self->mib->Caf->fields->{$cur} );
+                $eng = $cal->calc($val);
+            }
+            elsif ( exists $self->mib->Mcf->fields->{$cur} ) {
+                my $cal =
+                  ScosDecom::Cal::PolCal->new(
+                    mcf => $self->mib->Mcf->fields->{$cur} );
+                $eng = $cal->calc($val);
             }
         }
     }

@@ -74,11 +74,13 @@ sub vpd_decode {
         );
 
         if ( $vpdl->{vpd_grpsize} > 0 ) {
+
             #As repeated parameters might have the same name, we need an array
-            $res->{$pname}->{grp}=[];
-            for ( 0 .. ($val-1) ) { 
-                $res->{$pname}->{grp}->[$_]={};
-                $self->vpd_decode( $vpdl->{vpd_tree}, $res->{$pname}->{grp}->[$_] )
+            $res->{$pname}->{grp} = [];
+            for ( 0 .. ( $val - 1 ) ) {
+                $res->{$pname}->{grp}->[$_] = {};
+                $self->vpd_decode( $vpdl->{vpd_tree},
+                    $res->{$pname}->{grp}->[$_] );
             }
         }
     }

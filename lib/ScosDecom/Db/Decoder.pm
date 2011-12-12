@@ -92,25 +92,27 @@ sub identify {
 
     #no datafield header
     unless ( $h->{'Packet Id'}->{'DFH Flag'} ) {
+
         #finds first spid in pid FIXME
         my ($pid_type)  = keys $tree->{$apid};
         my ($pid_stype) = keys $tree->{$apid}->{$pid_type};
-        
+
         #return spid of the first pid that match
         return $tree->{$apid}->{$pid_type}->{$pid_stype}->[0]->[0];
     }
 
-    $sh = $tm->{'Packet Data Field'}->{'TMSourceSecondaryHeader'};
+    $sh    = $tm->{'Packet Data Field'}->{'TMSourceSecondaryHeader'};
     $type  = $sh->{'Service Type'};
     $stype = $sh->{'Service Subtype'};
-    $pm = $self->mib->Pic->get_pic( $type, $stype, $apid );
+    $pm    = $self->mib->Pic->get_pic( $type, $stype, $apid );
 
-    for ( @{$tree->{$apid}->{$type}->{$stype}} ) {
+    for ( @{ $tree->{$apid}->{$type}->{$stype} } ) {
 
         if ( !defined($pm) ) {
             if ( $_->[1] == 0 and $_->[2] == 0 ) { return $_->[0]; }
         }
         else {
+
 #            print "bit: ", extract_bitstream( $raw, 8 * $pm->[0], $pm->[1] ) , "\n";
             if ( $pm->[0] == -1 ) {
                 return $_->[0];
@@ -146,9 +148,8 @@ sub encode_res_header {
 
 sub encode_res_pid {
     my ( $self, $pid_entry ) = @_;
-    return $pid_entry->{pid_descr} ;
+    return $pid_entry->{pid_descr};
 }
-
 
 =head1 SYNOPSIS
 

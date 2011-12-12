@@ -46,9 +46,9 @@ sub decode {
             mib => $self->mib,
             pcf => $self->mib->Pcf->fields->{ $param->{plf_name} }
         );
-        tie %{$res->{$param->{plf_name}}}, 'Tie::IxHash';
+        tie %{ $res->{ $param->{plf_name} } }, 'Tie::IxHash';
         $p->decode( $self->raw, $param->{plf_offby}, $param->{plf_offbi},
-            $res->{$param->{plf_name}});
+            $res->{ $param->{plf_name} } );
     }
     return $res;
 }

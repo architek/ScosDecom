@@ -3,13 +3,13 @@
 #
 #         FILE: Param.pm
 #
-#  DESCRIPTION: 
+#  DESCRIPTION:
 #
 #        FILES: ---
 #         BUGS: ---
 #        NOTES: ---
-#       AUTHOR: YOUR NAME (), 
-#      COMPANY: 
+#       AUTHOR: YOUR NAME (),
+#      COMPANY:
 #      VERSION: 1.0
 #      CREATED: 21/11/2011 23:35:42
 #     REVISION: ---
@@ -28,7 +28,7 @@ Ccsds - Module used to handle generic parameters
 
 use Mouse;
 
-has 'mib' => ( is=>'ro' );
+has 'mib' => ( is => 'ro' );
 
 =head1 SYNOPSIS
 
@@ -62,5 +62,5 @@ See http://dev.perl.org/licenses/ for more information.
 
 =cut
 
-1; 
+1;
 

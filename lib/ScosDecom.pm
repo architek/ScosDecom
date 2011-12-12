@@ -12,7 +12,7 @@ ScosDecom - Module used to decode Ccsds TM/TC based on SCOS Database
 our $VERSION = '0.2';
 
 require Exporter;
-our @ISA = qw(Exporter);
+our @ISA    = qw(Exporter);
 our @EXPORT = qw($VERSION);
 
 =head1 SYNOPSIS
@@ -233,4 +233,4 @@ See http://dev.perl.org/licenses/ for more information.
 
 =cut
 
-1; # End of ScosDecom
+1;    # End of ScosDecom

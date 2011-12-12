@@ -27,7 +27,7 @@ Ccsds - Module used to load MIB files into objects
 =cut
 
 use Mouse;
-use ScosDecom::Db::Caf; 
+use ScosDecom::Db::Caf;
 use ScosDecom::Db::Ccf;
 use ScosDecom::Db::Cdf;
 use ScosDecom::Db::Cpc;
@@ -41,33 +41,33 @@ use ScosDecom::Db::Txf;
 use ScosDecom::Db::Txp;
 use ScosDecom::Db::Vpd;
 
-has 'Caf'=>( is      => 'rw',builder=>'_build_Caf');
-has 'Ccf'=>( is      => 'rw',builder=>'_build_Ccf');
-has 'Cdf'=>( is      => 'rw',builder=>'_build_Cdf');
-has 'Cpc'=>( is      => 'rw',builder=>'_build_Cpc');
-has 'Mcf'=>( is      => 'rw',builder=>'_build_Mcf');
-has 'Pcf'=>( is      => 'rw',builder=>'_build_Pcf');
-has 'Pic'=>( is      => 'rw',builder=>'_build_Pic');
-has 'Pid'=>( is      => 'rw',builder=>'_build_Pid');
-has 'Plf'=>( is      => 'rw',builder=>'_build_Plf');
-has 'Tpcf'=>( is      => 'rw',builder=>'_build_Tpcf');
-has 'Txf'=>( is      => 'rw',builder=>'_build_Txf');
-has 'Txp'=>( is      => 'rw',builder=>'_build_Txp');
-has 'Vpd'=>( is      => 'rw',builder=>'_build_Vpd');
+has 'Caf'  => ( is => 'rw', builder => '_build_Caf' );
+has 'Ccf'  => ( is => 'rw', builder => '_build_Ccf' );
+has 'Cdf'  => ( is => 'rw', builder => '_build_Cdf' );
+has 'Cpc'  => ( is => 'rw', builder => '_build_Cpc' );
+has 'Mcf'  => ( is => 'rw', builder => '_build_Mcf' );
+has 'Pcf'  => ( is => 'rw', builder => '_build_Pcf' );
+has 'Pic'  => ( is => 'rw', builder => '_build_Pic' );
+has 'Pid'  => ( is => 'rw', builder => '_build_Pid' );
+has 'Plf'  => ( is => 'rw', builder => '_build_Plf' );
+has 'Tpcf' => ( is => 'rw', builder => '_build_Tpcf' );
+has 'Txf'  => ( is => 'rw', builder => '_build_Txf' );
+has 'Txp'  => ( is => 'rw', builder => '_build_Txp' );
+has 'Vpd'  => ( is => 'rw', builder => '_build_Vpd' );
 
-sub _build_Caf { ScosDecom::Db::Caf->new  }
-sub _build_Ccf { ScosDecom::Db::Ccf->new  }
-sub _build_Cdf { ScosDecom::Db::Cdf->new  }
-sub _build_Cpc { ScosDecom::Db::Cpc->new  }
-sub _build_Mcf { ScosDecom::Db::Mcf->new  }
-sub _build_Pcf { ScosDecom::Db::Pcf->new  }
-sub _build_Pic { ScosDecom::Db::Pic->new  }
-sub _build_Pid { ScosDecom::Db::Pid->new  }
-sub _build_Plf { ScosDecom::Db::Plf->new  }
-sub _build_Tpcf{ ScosDecom::Db::Tpcf->new }
-sub _build_Txf { ScosDecom::Db::Txf->new  }
-sub _build_Txp { ScosDecom::Db::Txp->new  }
-sub _build_Vpd { ScosDecom::Db::Vpd->new  }
+sub _build_Caf  { ScosDecom::Db::Caf->new }
+sub _build_Ccf  { ScosDecom::Db::Ccf->new }
+sub _build_Cdf  { ScosDecom::Db::Cdf->new }
+sub _build_Cpc  { ScosDecom::Db::Cpc->new }
+sub _build_Mcf  { ScosDecom::Db::Mcf->new }
+sub _build_Pcf  { ScosDecom::Db::Pcf->new }
+sub _build_Pic  { ScosDecom::Db::Pic->new }
+sub _build_Pid  { ScosDecom::Db::Pid->new }
+sub _build_Plf  { ScosDecom::Db::Plf->new }
+sub _build_Tpcf { ScosDecom::Db::Tpcf->new }
+sub _build_Txf  { ScosDecom::Db::Txf->new }
+sub _build_Txp  { ScosDecom::Db::Txp->new }
+sub _build_Vpd  { ScosDecom::Db::Vpd->new }
 
 =head1 SYNOPSIS
 

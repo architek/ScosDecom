@@ -52,18 +52,21 @@ sub _new_tree {
     my ($self) = @_;
     my $tree;
     for ( @{ $self->fields } ) {
-        my $apid=$_->{pic_apid}//"";
-        $tree->{ $_->{pic_type} }->{ $_->{pic_stype} }->{ $apid } =
-          [ $_->{pic_pi1_off}, $_->{pic_pi1_wid},
-            $_->{pic_pi2_off}, $_->{pic_pi2_wid} ];
+        my $apid = $_->{pic_apid} // "";
+        $tree->{ $_->{pic_type} }->{ $_->{pic_stype} }->{$apid} = [
+            $_->{pic_pi1_off}, $_->{pic_pi1_wid},
+            $_->{pic_pi2_off}, $_->{pic_pi2_wid}
+        ];
     }
     $tree;
 }
 
 sub get_pic {
     my ( $self, $type, $stype, $apid ) = @_;
-    return $self->tree->{$type}->{$stype}->{$apid} if exists( $self->tree->{$type}->{$stype}->{$apid} );
-    return $self->tree->{$type}->{$stype}->{""} if exists( $self->tree->{$type}->{$stype}->{""} );
+    return $self->tree->{$type}->{$stype}->{$apid}
+      if exists( $self->tree->{$type}->{$stype}->{$apid} );
+    return $self->tree->{$type}->{$stype}->{""}
+      if exists( $self->tree->{$type}->{$stype}->{""} );
     return undef;
 }
 

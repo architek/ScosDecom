@@ -8,8 +8,8 @@
 #        FILES: ---
 #         BUGS: ---
 #        NOTES: ---
-#       AUTHOR: YOUR NAME (), 
-#      COMPANY: 
+#       AUTHOR: YOUR NAME (),
+#      COMPANY:
 #      VERSION: 1.0
 #      CREATED: 04/12/2011 01:24:21
 #     REVISION: ---
@@ -25,15 +25,21 @@ use strict;
 Ccsds - Module used to return numeric interpolated values out of raw param
 
 =cut
+
 use Mouse;
 use Math::Interpolate;
 
-has 'caf' => (is=>'ro');
+has 'caf' => ( is => 'ro' );
 
 sub calc {
-    my ($self,$val)=@_;
+    my ( $self, $val ) = @_;
+
     #FIXME always extrapolating
-    return (Math::Interpolate::linear_interpolate($val,$self->caf->{xvals},$self->caf->{yvals}))[0];
+    return (
+        Math::Interpolate::linear_interpolate(
+            $val, $self->caf->{xvals}, $self->caf->{yvals}
+        )
+    )[0];
 }
 
 =head1 SYNOPSIS
@@ -68,5 +74,5 @@ See http://dev.perl.org/licenses/ for more information.
 
 =cut
 
-1; 
+1;
 
