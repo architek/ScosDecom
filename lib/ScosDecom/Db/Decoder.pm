@@ -139,10 +139,14 @@ sub encode_res_header {
     tie %$res, 'Tie::IxHash';
 
     my $t_st = tm_get_type_stype($tm);
-    return "No Pus Header" unless ($t_st);
-
-    $res->{type}    = $t_st->[0];
-    $res->{subtype} = $t_st->[1];
+    if (! $t_st) {
+        $res->{sec}=0;
+    } else  {
+        $res->{sec}=1;
+        $res->{type}    = $t_st->[0];
+        $res->{subtype} = $t_st->[1];
+        $res->{obt}     = $tm->{'Packet Data Field'}->{TMSourceSecondaryHeader}->{Sat_Time}->{OBT}; 
+    }
     return $res;
 }
 
