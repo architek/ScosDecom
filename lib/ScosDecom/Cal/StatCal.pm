@@ -36,7 +36,7 @@ sub calc {
         return $ltxp->{txp_altxt}
           if ( $val >= $ltxp->{txp_from} && $val <= $ltxp->{txp_to} );
     }
-    return "(Out of cal)";
+    return "****";
 }
 
 =head1 SYNOPSIS
