@@ -94,8 +94,8 @@ sub identify {
     unless ( $h->{'Packet Id'}->{'DFH Flag'} ) {
 
         #finds first spid in pid FIXME
-        my ($pid_type)  = keys $tree->{$apid};
-        my ($pid_stype) = keys $tree->{$apid}->{$pid_type};
+        my ($pid_type)  = keys %{$tree->{$apid}};
+        my ($pid_stype) = keys %{$tree->{$apid}->{$pid_type}};
 
         #return spid of the first pid that match
         return $tree->{$apid}->{$pid_type}->{$pid_stype}->[0]->[0];

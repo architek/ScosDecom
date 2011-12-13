@@ -47,7 +47,7 @@ sub _new_tree {
     my $self = shift;
 
     my $tree;
-    for ( keys $self->fields ) {
+    for ( keys %{$self->fields} ) {
         my $pid   = $self->fields->{$_};
         my $apid  = $pid->{pid_apid};
         my $type  = $pid->{pid_type};
