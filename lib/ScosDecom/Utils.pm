@@ -73,6 +73,7 @@ sub extract_bitstream {
     if ($sign and ($num&1<<$len-1)) {
         $num=-(2**$len-abs($num));
     }
+    $num;
 }
 
 sub ScosType2BitLen {
