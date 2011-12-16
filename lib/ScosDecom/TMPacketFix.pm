@@ -39,8 +39,7 @@ sub decode {
     for my $param ( @{ $self->plf } ) {
         die unless $param->{plf_nbocc} == 1;
 
-        #Skip mothers
-        next if exists $self->mib->{mothers}->{plf_name};
+        next if $self->mib->is_tm_ignored($param->{plf_name});
 
         my $p = ScosDecom::TMParam->new(
             mib => $self->mib,
