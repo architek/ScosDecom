@@ -12,8 +12,6 @@ requires 'Ccsds'             => '0';
 
 test => {
     TESTS =>
-
-#        q[t/00-load.t t/boilerplate.t t/pod.t t/01-crc.t t/02-decode.t]
       q[t/00-load.t ]
 };
 
