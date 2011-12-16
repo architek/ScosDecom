@@ -31,9 +31,7 @@ sub dprint {
     print "$_[0]\n" if ($debug);
 }
 
-sub bin2dec {
-    return unpack( "N", pack( "B32", substr( "0" x 32 . shift, -32 ) ) );
-}
+sub bin2dec { return unpack( "N", pack( "B32", substr( "0" x 32 . shift, -32 ) ) ); }
 
 #extract bitstream from raw, off and len are bit numbering!
 #bigendian, LSB is left positionned
@@ -71,9 +69,10 @@ sub extract_bitstream {
     #shift to right
     $num = $num >> ( 7 - $off2_r );
 
-#nulliffy MSB - side effect: is not possible to get the max negative value. (for 8 bits: from -127 to 127)
-    $num = -int( $num / 2 ) - 1 if ($sign);
-    $num;
+    #2's complement if signed
+    if ($sign and ($num&1<<$len-1)) {
+        $num=-(2**$len-abs($num));
+    }
 }
 
 sub ScosType2BitLen {
