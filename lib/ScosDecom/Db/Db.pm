@@ -69,6 +69,19 @@ sub _build_Txf  { ScosDecom::Db::Txf->new }
 sub _build_Txp  { ScosDecom::Db::Txp->new }
 sub _build_Vpd  { ScosDecom::Db::Vpd->new }
 
+has 'tm_ignored' => ( is => 'rw' );
+has 'packet_ignored' => ( is => 'rw' );
+
+sub is_tm_ignored {
+    my ($self,$name)=@_;
+    return exists $self->tm_ignored()->{$name};
+}
+
+sub is_packet_ignored {
+    my ($self,$name)=@_;
+    return exists $self->packet_ignored()->{$name};
+}
+
 =head1 SYNOPSIS
 
 This library needs to be called to initialized objects from MIB files. The object can then be used while decoding TM/TC traffic
