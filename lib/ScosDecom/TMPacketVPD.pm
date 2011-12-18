@@ -54,9 +54,6 @@ sub vpd_decode {
     for my $vpdl (@$vpd) {
         my $pname = $vpdl->{vpd_name};
 
-        #Skip mothers
-        next if $self->mib->is_tm_ignored($pname);
-
         my $p = ScosDecom::TMParam->new(
             mib => $self->mib,
             pcf => $self->mib->Pcf->fields->{$pname}

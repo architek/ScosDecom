@@ -34,10 +34,7 @@ sub dprint {
 sub bin2dec { return unpack( "N", pack( "B32", substr( "0" x 32 . shift, -32 ) ) ); }
 
 #extract bitstream from raw, off and len are bit numbering!
-#bigendian, LSB is left positionned
-#0        1        2        3
-#01234567 89012345 67890123 45678901
-#00000000 00111111 22222222 22222233
+#bigendian, MSB is left positionned
 sub extract_bitstream {
     my ( $raw, $off, $len, $sign ) = @_;
 
@@ -48,21 +45,14 @@ sub extract_bitstream {
     my $n = $to - $from + 1;
     my $val = substr( $raw, $from, $n );
 
-    #off_ goes from 0 to 7
-    #0 is ff or 01 (2^8 to 2^1)
-    #7 is 01 or ff (2^1 to 2^8)
-
     #Trim left/right bits
     my $mask_l = pack( "b8", "1" x ( 8 - $off_l ) );
     my $mask_r = pack( "B8", "1" x ( $off2_r + 1 ) );
-    substr( $val, 0,  1 ) = ( substr( $val, 0,  1 ) & $mask_l );
-    substr( $val, -1, 1 ) = ( substr( $val, -1, 1 ) & $mask_r );
-    dprint "val masked is => ", unpack( 'H*', $val ), "\n";
+    substr( $val, 0,  1 ) &= $mask_l ;
+    substr( $val, -1, 1 ) &= $mask_r ;
     my $num = 0;
-    dprint "n=$n,Raw to decode:" . unpack( 'H*', $val ) . "\n";
     for ( my $i = 0 ; $i < $n ; $i++ ) {
 
-        #$num = $num + 256 + unpack('C',substr($val,$i,1));
         $num = $num * 256 + unpack( 'C', substr( $val, $i, 1 ) );
     }
 
@@ -70,9 +60,8 @@ sub extract_bitstream {
     $num = $num >> ( 7 - $off2_r );
 
     #2's complement if signed
-    if ($sign and ($num&1<<$len-1)) {
-        $num=-(2**$len-abs($num));
-    }
+    $num=-(2**$len-$num) 
+            if $sign and ($num&1<<$len-1);
     $num;
 }
 
@@ -105,14 +94,14 @@ sub ScosType2BitLen {
 
 sub tm_get_type_stype {
     my ($tm) = @_;
-    return undef unless ( $tm->{'Packet Header'}->{'Packet Id'}->{'DFH Flag'} );
+    return unless ( $tm->{'Packet Header'}->{'Packet Id'}->{'DFH Flag'} );
     my $sh = $tm->{'Packet Data Field'}->{'TMSourceSecondaryHeader'};
     return [ $sh->{'Service Type'}, $sh->{'Service Subtype'} ];
 }
 
 sub tc_get_type_stype {
     my ($tc) = @_;
-    return undef unless ( $tc->{'Packet Header'}->{'Packet Id'}->{'DFH Flag'} );
+    return unless ( $tc->{'Packet Header'}->{'Packet Id'}->{'DFH Flag'} );
     my $sh = $tc->{'Packet Data Field'}->{'TCSourceSecondaryHeader'};
     return [ $sh->{'Service Type'}, $sh->{'Service Subtype'} ];
 }
