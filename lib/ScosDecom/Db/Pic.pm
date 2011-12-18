@@ -67,7 +67,8 @@ sub get_pic {
       if exists( $self->tree->{$type}->{$stype}->{$apid} );
     return $self->tree->{$type}->{$stype}->{""}
       if exists( $self->tree->{$type}->{$stype}->{""} );
-    return undef;
+    #Nothing
+    return;
 }
 
 1;
