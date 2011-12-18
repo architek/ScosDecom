@@ -27,13 +27,10 @@ Ccsds - Factory Module for building packets and identify them
 =cut
 
 use Mouse;
+use Tie::IxHash;
+
 use ScosDecom::TMPacketFix;
 use ScosDecom::TMPacketVPD;
-use ScosDecom::Utils;
-use Tie::IxHash;
-use Data::Dumper;
-
-#use ScosDecom::TMPacketVpd;
 use ScosDecom::Utils;
 
 has 'mib' => ( is => 'ro' );
@@ -43,15 +40,10 @@ sub decode {
     my $packet;
 
     my $res;
-    tie %$res, 'Tie::IxHash';
-
-    $res->{header} = $self->encode_res_header($tm);
 
     #detect tm/tc based on tm->{Packet Header}->{'Packet Id'}->{Apid}->{Pcat}
     my $spid = $self->identify( $tm, $raw );
     if ( exists $self->mib->Plf->fields->{$spid} ) {
-        $res->{packet} =
-          $self->encode_res_pid( $self->mib->Pid->fields->{$spid} );
         $packet = ScosDecom::TMPacketFix->new(
             tm  => $tm,
             raw => $raw,
@@ -60,8 +52,6 @@ sub decode {
         );
     }
     elsif ( exists $self->mib->Vpd->fields->{$spid} ) {
-        $res->{packet} =
-          $self->encode_res_pid( $self->mib->Pid->fields->{$spid} );
         $packet = ScosDecom::TMPacketVPD->new(
             tm   => $tm,
             raw  => $raw,
@@ -71,9 +61,9 @@ sub decode {
         );
     }
     else {
-        warn "Did not find packet for spid $spid";
-        return undef;
+        return;
     }
+    $res->{packet} = $self->encode_res_pid( $self->mib->Pid->fields->{$spid} );
     tie %{ $res->{params} }, 'Tie::IxHash';
     $packet->decode( $res->{params} );
     return $res;
@@ -109,11 +99,9 @@ sub identify {
     for ( @{ $tree->{$apid}->{$type}->{$stype} } ) {
 
         if ( !defined($pm) ) {
-            if ( $_->[1] == 0 and $_->[2] == 0 ) { return $_->[0]; }
+            return $_->[0] if $_->[1] == 0 and $_->[2] == 0 ;
         }
         else {
-
-#            print "bit: ", extract_bitstream( $raw, 8 * $pm->[0], $pm->[1] ) , "\n";
             if ( $pm->[0] == -1 ) {
                 return $_->[0];
             }
@@ -131,23 +119,7 @@ sub identify {
             }
         }
     }
-}
-
-sub encode_res_header {
-    my ( $self, $tm ) = @_;
-    my $res;
-    tie %$res, 'Tie::IxHash';
-
-    my $t_st = tm_get_type_stype($tm);
-    if (! $t_st) {
-        $res->{sec}=0;
-    } else  {
-        $res->{sec}=1;
-        $res->{type}    = $t_st->[0];
-        $res->{subtype} = $t_st->[1];
-        $res->{obt}     = $tm->{'Packet Data Field'}->{TMSourceSecondaryHeader}->{Sat_Time}->{OBT}; 
-    }
-    return $res;
+    return;
 }
 
 sub encode_res_pid {
