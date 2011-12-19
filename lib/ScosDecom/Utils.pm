@@ -28,7 +28,7 @@ Ccsds - Module containing several bit/bytes manipulation utilities
 
 sub dprint {
     my $debug = 0;
-    print "$_[0]\n" if ($debug);
+    warn "$@" if ($debug);
 }
 
 sub bin2dec { return unpack( "N", pack( "B32", substr( "0" x 32 . shift, -32 ) ) ); }

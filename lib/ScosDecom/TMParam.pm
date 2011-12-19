@@ -53,32 +53,8 @@ sub decode {
     $val;
 }
 
-sub get_param_val {
-    my ( $self, $raw, $offby, $offbi ) = @_;
-    my $val;
-
-    my ( $ptc, $pfc ) = ( $self->pcf->{ptc}, $self->pcf->{pfc} );
-    my $len = ScosType2BitLen( $ptc, $pfc );
-
-    if ( $ptc == 7 ) {    # Octet String
-        $val = unpack( 'H*', substr( $raw, $offby, $pfc ) );
-    }
-    elsif ( $ptc == 2 || $ptc == 3 ) {    # unsigned
-        $val = extract_bitstream( $raw, $offby * 8 + $offbi, $len );
-    }
-    elsif ( $ptc == 4 ) {                 # signed
-        $val = extract_bitstream( $raw, $offby * 8 + $offbi, $len, 1 );
-    }
-    elsif ( $ptc == 9 ) {                 # Time
-        die "Not handled" unless ( $offbi == 0 && $pfc == 18 );
-        my $t = CUC( 4, 3 );
-        my $decoded = $t->parse( substr( $raw, $offby, 7 ) );
-        $val = $decoded->{OBT} . "s";
-    }
-    else {
-        die "unknown ptc $ptc for $self->plf->{plf_name}\n";
-    }
-    $val;
+sub get_size {
+    return ( $_[0]->pcf->{ptc}, $_[0]->pcf->{pfc} );
 }
 
 sub to_eng {

@@ -27,8 +27,38 @@ Ccsds - Module used to handle generic parameters
 =cut
 
 use Mouse;
+use Ccsds::StdTime;
+use ScosDecom::Utils;
 
 has 'mib' => ( is => 'ro' );
+
+sub get_param_val {
+    my ( $self, $raw, $offby, $offbi ) = @_;
+    my $val;
+
+    my ( $ptc, $pfc ) = $self->get_size();
+    my $len = ScosType2BitLen( $ptc, $pfc );
+
+    if ( $ptc == 7 ) {    # Octet String
+        $val = unpack( 'H*', substr( $raw, $offby, $pfc ) );
+    }
+    elsif ( $ptc == 2 || $ptc == 3 ) {    # unsigned
+        $val = extract_bitstream( $raw, $offby * 8 + $offbi, $len );
+    }
+    elsif ( $ptc == 4 ) {                 # signed
+        $val = extract_bitstream( $raw, $offby * 8 + $offbi, $len, 1 );
+    }
+    elsif ( $ptc == 9 ) {                 # Time
+        die "Not handled" unless ( $offbi == 0 && $pfc == 18 );
+        my $t = CUC( 4, 3 );
+        my $decoded = $t->parse( substr( $raw, $offby, 7 ) );
+        $val = $decoded->{OBT} . "s";
+    }
+    else {
+        die "unknown ptc $ptc for $self->plf->{plf_name}\n";
+    }
+    $val;
+}
 
 =head1 SYNOPSIS
 
