@@ -42,31 +42,36 @@ sub decode {
     my $res;
 
     #detect tm/tc based on tm->{Packet Header}->{'Packet Id'}->{Apid}->{Pcat}
-    my $spid = $self->identify( $tm, $raw );
-    if ( exists $self->mib->Plf->fields->{$spid} ) {
-        $packet = ScosDecom::TMPacketFix->new(
-            tm  => $tm,
-            raw => $raw,
-            plf => $self->mib->Plf->fields->{$spid},
-            mib => $self->mib
-        );
+    if ( $tm->{'Packet Header'}->{'Packet Id'}->{Type} == 0 ) {
+        my $spid = $self->identify( $tm, $raw );
+        if ( exists $self->mib->Plf->fields->{$spid} ) {
+            $packet = ScosDecom::TMPacketFix->new(
+                tm  => $tm,
+                raw => $raw,
+                plf => $self->mib->Plf->fields->{$spid},
+                mib => $self->mib
+            );
+        }
+        elsif ( exists $self->mib->Vpd->fields->{$spid} ) {
+            $packet = ScosDecom::TMPacketVPD->new(
+                tm   => $tm,
+                raw  => $raw,
+                spid => $spid,
+                vpd  => $self->mib->Vpd->tree->{$spid},
+                mib  => $self->mib
+            );
+        }
+        else {
+            return;
+        }
+        $res->{packet} =
+          $self->encode_res_pid( $self->mib->Pid->fields->{$spid} );
+        tie %{ $res->{params} }, 'Tie::IxHash';
+        $packet->decode( $res->{params} );
+        return $res;
+    } elsif ($tm->{'Packet Header'}->{'Packet Id'}->{Type} = 1) {
+        
     }
-    elsif ( exists $self->mib->Vpd->fields->{$spid} ) {
-        $packet = ScosDecom::TMPacketVPD->new(
-            tm   => $tm,
-            raw  => $raw,
-            spid => $spid,
-            vpd  => $self->mib->Vpd->tree->{$spid},
-            mib  => $self->mib
-        );
-    }
-    else {
-        return;
-    }
-    $res->{packet} = $self->encode_res_pid( $self->mib->Pid->fields->{$spid} );
-    tie %{ $res->{params} }, 'Tie::IxHash';
-    $packet->decode( $res->{params} );
-    return $res;
 }
 
 sub identify {
@@ -84,8 +89,8 @@ sub identify {
     unless ( $h->{'Packet Id'}->{'DFH Flag'} ) {
 
         #finds first spid in pid FIXME
-        my ($pid_type)  = keys %{$tree->{$apid}};
-        my ($pid_stype) = keys %{$tree->{$apid}->{$pid_type}};
+        my ($pid_type)  = keys %{ $tree->{$apid} };
+        my ($pid_stype) = keys %{ $tree->{$apid}->{$pid_type} };
 
         #return spid of the first pid that match
         return $tree->{$apid}->{$pid_type}->{$pid_stype}->[0]->[0];
@@ -99,7 +104,7 @@ sub identify {
     for ( @{ $tree->{$apid}->{$type}->{$stype} } ) {
 
         if ( !defined($pm) ) {
-            return $_->[0] if $_->[1] == 0 and $_->[2] == 0 ;
+            return $_->[0] if $_->[1] == 0 and $_->[2] == 0;
         }
         else {
             if ( $pm->[0] == -1 ) {
