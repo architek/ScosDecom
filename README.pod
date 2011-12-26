@@ -198,7 +198,7 @@ Laurent KISLAIRE, C<< <teebeenator at gmail.com> >>
 
 =head1 BUGS
 
-Please report any bugs or feature requests to C<teebeenator at gmail.com>
+This Software is experimental
 
 =head1 SUPPORT
 
