@@ -44,6 +44,7 @@ sub decode {
     #detect tm/tc based on tm->{Packet Header}->{'Packet Id'}->{Apid}->{Pcat}
     if ( $tm->{'Packet Header'}->{'Packet Id'}->{Type} == 0 ) {
         my $spid = $self->identify( $tm, $raw );
+	return unless $spid;
         if ( exists $self->mib->Plf->fields->{$spid} ) {
             $packet = ScosDecom::TMPacketFix->new(
                 tm  => $tm,
@@ -83,7 +84,10 @@ sub identify {
     my $apid = $h->{'Packet Id'}->{vApid};
     my $tree = $self->mib->Pid->tree;
 
-    die "No pid entry for apid $apid" unless exists( $tree->{$apid} );
+    if (! exists ($tree->{$apid}) ) {
+    	warn "Unknown apid $apid" ;
+	return;
+    }
 
     #no datafield header
     unless ( $h->{'Packet Id'}->{'DFH Flag'} ) {
