@@ -28,6 +28,7 @@ TMPacketFix
 
 use Mouse;
 extends 'ScosDecom::TMPacket';
+
 use ScosDecom::TMParam;
 use Tie::IxHash;
 
@@ -45,7 +46,7 @@ sub decode {
             mib => $self->mib,
             pcf => $self->mib->Pcf->fields->{ $param->{plf_name} }
         );
-        tie %{ $res->{ $param->{plf_name} } }, 'Tie::IxHash';
+        %{$res->{$param->{plf_name}}}=();
         $p->decode( $self->raw, $param->{plf_offby}, $param->{plf_offbi},
             $res->{ $param->{plf_name} } );
     }
@@ -54,7 +55,7 @@ sub decode {
 
 =head1 SYNOPSIS
 
-This library allows 
+Decode fix packets
 
 =head1 AUTHOR
 
