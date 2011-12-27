@@ -22,7 +22,7 @@ use strict;
 
 =head1 NAME
 
-Ccsds - Factory Module for building packets and identify them 
+Ccsds - Factory Module for building packets and identify them
 
 =cut
 
@@ -71,7 +71,6 @@ sub decode {
         $packet->decode( $res->{params} );
         return $res;
     } elsif ($tm->{'Packet Header'}->{'Packet Id'}->{Type} = 1) {
-        
     }
 }
 

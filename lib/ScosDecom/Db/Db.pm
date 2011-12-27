@@ -74,7 +74,7 @@ has 'packet_ignored' => ( is => 'rw' );
 
 sub is_tm_ignored {
     my ($self,$name)=@_;
-    return exists $self->tm_ignored()->{$name};
+    return (exists $self->tm_ignored()->{$name} and $self->tm_ignored()->{$name} == 1 );
 }
 
 sub is_packet_ignored {
