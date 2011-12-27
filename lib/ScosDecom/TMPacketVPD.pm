@@ -58,7 +58,7 @@ sub vpd_decode {
             mib => $self->mib,
             pcf => $self->mib->Pcf->fields->{$pname}
         );
-        tie %{ $res->{$pname} }, 'Tie::IxHash';
+        %{$res->{$pname}}=();
         my $val = $p->decode(
             $self->raw,
             int( $self->{vpd_off_bin} / 8 ),
