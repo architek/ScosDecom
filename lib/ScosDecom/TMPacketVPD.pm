@@ -30,7 +30,6 @@ use Mouse;
 extends 'ScosDecom::TMPacket';
 use ScosDecom::TMParam;
 use ScosDecom::Utils;
-use Tie::IxHash;
 
 has 'vpd'         => ( is => 'ro' );
 has 'spid'        => ( is => 'ro' );

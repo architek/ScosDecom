@@ -30,7 +30,6 @@ use Mouse;
 extends 'ScosDecom::TMPacket';
 
 use ScosDecom::TMParam;
-use Tie::IxHash;
 
 has 'plf' => ( is => 'ro' );
 
@@ -42,13 +41,12 @@ sub decode {
 
         next if $self->mib->is_tm_ignored($param->{plf_name});
 
-        my $p = ScosDecom::TMParam->new(
-            mib => $self->mib,
-            pcf => $self->mib->Pcf->fields->{ $param->{plf_name} }
-        );
+        my $p = ScosDecom::TMParam->new( mib => $self->mib, pcf => $self->mib->Pcf->fields->{ $param->{plf_name} });
+
         %{$res->{$param->{plf_name}}}=();
         $p->decode( $self->raw, $param->{plf_offby}, $param->{plf_offbi},
             $res->{ $param->{plf_name} } );
+
     }
     return $res;
 }
