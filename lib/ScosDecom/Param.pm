@@ -55,7 +55,8 @@ sub get_param_val {
         $val = $decoded->{OBT} . "s";
     }
     else {
-        die "unknown ptc $ptc for $self->plf->{plf_name}\n";
+        warn "unknown ptc $ptc for ", $self->pcf->{pcf_descr} , " , returning 0..\n";
+        $val = 0;
     }
     $val;
 }

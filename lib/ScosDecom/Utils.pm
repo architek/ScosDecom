@@ -43,6 +43,15 @@ sub extract_bitstream {
     my ( $from, $to ) = map { int( $_ / 8 ) } ( $off, $off2i );
     my ( $off_l, $off2_r ) = map { $_ % 8 } ( $off, $off2i );
     my $n = $to - $from + 1;
+    if ( length($raw) < ($from + $n) ) {
+        use Ccsds::Utils "hdump";
+        warn "Trying to extract outside packet! Returning 0..\n";
+        warn "raw=\n";
+        warn hdump($raw) , "\n";
+        warn "off=$off,len=$len\n";
+        warn "offbytes=",$off/8;
+        return 0;
+    }
     my $val = substr( $raw, $from, $n );
 
     #Trim left/right bits
@@ -60,7 +69,7 @@ sub extract_bitstream {
     $num = $num >> ( 7 - $off2_r );
 
     #2's complement if signed
-    $num=-(2**$len-$num) 
+    $num=-(2**$len-$num)
             if $sign and ($num&1<<$len-1);
     $num;
 }
