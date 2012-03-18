@@ -95,6 +95,9 @@ sub ScosType2BitLen {
             die "ptc:$ptc,pfc:$pfc not supported by Scos 2000\n";
         }
     }
+    elsif ( $ptc == 5 and $pfc == 2) {
+        $len=64;
+    }
     elsif ( $ptc == 7 ) {
         $len = $pfc;
     }
