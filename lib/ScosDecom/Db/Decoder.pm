@@ -65,8 +65,7 @@ sub decode {
         else {
             return;
         }
-        $res->{packet} =
-          $self->encode_res_pid( $self->mib->Pid->fields->{$spid} );
+        $res->{packet} = $self->encode_res_pid( $self->mib->Pid->fields->{$spid} );
         tie %{ $res->{params} }, 'Tie::IxHash';
         $packet->decode( $res->{params} );
         return $res;

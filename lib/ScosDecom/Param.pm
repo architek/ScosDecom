@@ -51,18 +51,17 @@ sub get_param_val {
     elsif ( $ptc == 5 and $pfc == 2) {    # double precision real
         $val = extract_bitstream( $raw, $offby * 8 + $offbi, $len);
         $val = unpack('d<',pack('Q',$val));
-#TODO check above
     }
     elsif ( $ptc == 9 ) {                 # Time
         die "Not handled" unless ( $offbi == 0 && $pfc == 18 );
         my $t = CUC( 4, 3 );
         if (length($raw)>=($offby+7)) {
-        	my $decoded = $t->parse( substr( $raw, $offby, 7 ) );
-        	$val = $decoded->{OBT} . "s";
+            my $decoded = $t->parse( substr( $raw, $offby, 7 ) );
+            $val = $decoded->{OBT} . "s";
         } else {
-                warn "Not enough bytes to decode CUC time, time will be 0\n";
-                $val=0;
-	}
+            warn "Not enough bytes to decode CUC time, time will be 0\n";
+            $val=0;
+        }
     }
     else {
         warn "unknown Ptc $ptc for ", $self->pcf->{pcf_descr} , " , returning 0..\n";
