@@ -22,14 +22,9 @@ use strict;
 
 =head1 NAME
 
-Ccsds - Module containing several bit/bytes manipulation utilities
+Ccsds - Module containing some utilities
 
 =cut
-
-sub dprint {
-    my $debug = 0;
-    warn "$@" if ($debug);
-}
 
 sub bin2dec { return unpack( "N", pack( "B32", substr( "0" x 32 . shift, -32 ) ) ); }
 
@@ -67,8 +62,7 @@ sub extract_bitstream {
 
     #shift to right
     $num = $num >> ( 7 - $off2_r );
-
-    #2's complement if signed
+    #2's complement if data to return is signed
     $num=-(2**$len-$num)
             if $sign and ($num&1<<$len-1);
     $num;
@@ -100,6 +94,9 @@ sub ScosType2BitLen {
     }
     elsif ( $ptc == 7 ) {
         $len = $pfc;
+    }
+    else {
+            die "ptc:$ptc,pfc:$pfc not done\n";
     }
     $len;
 }
