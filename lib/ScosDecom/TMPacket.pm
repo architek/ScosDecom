@@ -22,7 +22,7 @@ use strict;
 
 =head1 NAME
 
-TMPacket 
+TMPacket
 
 =cut
 

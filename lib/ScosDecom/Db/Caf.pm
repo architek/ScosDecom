@@ -48,10 +48,5 @@ sub BUILD {
     }
 }
 
-#self, table, indexval, $fields
-sub _add_elt {
-    $_[1]->{ $_[2] } = $_[3];
-}
-
 1;
 

@@ -24,17 +24,17 @@ use Mouse;
 use ScosDecom::Db::FieldsDef;
 extends 'ScosDecom::Db::Csv';
 
-has 'tree' => (
-    is      => 'rw',
-    lazy    => 1,
-    builder => '_new_tree',
-);
-
 #This class directly derives from csv as we want an array of lines and not an indexed table
 #self, table, undef , $fields
 sub _add_elt {
     push @{ $_[1] }, $_[3];
 }
+
+has 'tree' => (
+    is      => 'rw',
+    lazy    => 1,
+    builder => '_new_tree',
+);
 
 around BUILDARGS => sub {
     my $orig  = shift;
