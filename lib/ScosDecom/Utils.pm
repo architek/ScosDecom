@@ -26,10 +26,18 @@ Ccsds - Module containing some utilities
 
 =cut
 
+#Simple Global Accumulator
+my $log;
+
+sub clrlog { $log="" }
+sub mlog { $log .= shift if defined($_[0]); $log; }
+
+#Binary to decimal converter
 sub bin2dec { return unpack( "N", pack( "B32", substr( "0" x 32 . shift, -32 ) ) ); }
 
-#extract bitstream from raw, off and len are bit numbering!
-#bigendian, MSB is left positionned
+#extract bitstream from raw
+#in: off and len are in bits, sign = 1 for signed values (2s complement)
+#out: Undef if out of bound, Big endian value otherwise
 sub extract_bitstream {
     my ( $raw, $off, $len, $sign ) = @_;
 
@@ -40,12 +48,9 @@ sub extract_bitstream {
     my $n = $to - $from + 1;
     if ( length($raw) < ($from + $n) ) {
         use Ccsds::Utils "hdump";
-        warn "Trying to extract outside packet! Returning 0..\n";
-        warn "raw=\n";
-        warn hdump($raw) , "\n";
-        warn "off=$off,len=$len\n";
-        warn "offbytes=",$off/8;
-        return 0;
+        mlog "Trying to extract outside packet! raw is:\n". hdump($raw) . "\n";
+        mlog "off=$off,len=$len,offbytes=" . $off/8 . "\n";
+        return undef;
     }
     my $val = substr( $raw, $from, $n );
 
@@ -61,11 +66,11 @@ sub extract_bitstream {
     }
 
     #shift to right
-    $num = $num >> ( 7 - $off2_r );
+    $num = $num >> 7 - $off2_r ;
     #2's complement if data to return is signed
     $num=-(2**$len-$num)
             if $sign and ($num&1<<$len-1);
-    $num;
+    return $num;
 }
 
 sub ScosType2BitLen {
@@ -89,14 +94,20 @@ sub ScosType2BitLen {
             die "ptc:$ptc,pfc:$pfc not supported by Scos 2000\n";
         }
     }
+    elsif ( $ptc == 5 and $pfc == 1) {
+        $len=32;
+    }
     elsif ( $ptc == 5 and $pfc == 2) {
         $len=64;
     }
     elsif ( $ptc == 7 ) {
         $len = $pfc;
     }
+    elsif ( $ptc == 9 and $pfc == 18 ) {
+        $len=56;
+    }
     else {
-            die "ptc:$ptc,pfc:$pfc not done\n";
+        die "ptc:$ptc,pfc:$pfc not done\n";
     }
     $len;
 }
@@ -118,7 +129,7 @@ sub tc_get_type_stype {
 require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT =
-  qw(extract_bitstream bin2dec ScosType2BitLen tm_get_type_stype tc_get_type_stype);
+  qw(clrlog mlog extract_bitstream bin2dec ScosType2BitLen tm_get_type_stype tc_get_type_stype);
 
 =head1 SYNOPSIS
 
