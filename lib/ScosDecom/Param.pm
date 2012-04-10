@@ -32,11 +32,14 @@ use ScosDecom::Utils;
 
 has 'mib' => ( is => 'ro' );
 
+#returns undef if value could not be extracted due to boundary error
+#or unknown ptc,pfc
 sub get_param_val {
     my ( $self, $raw, $offby, $offbi ) = @_;
     my $val;
 
     my ( $ptc, $pfc ) = $self->get_size();
+
     my $len = ScosType2BitLen( $ptc, $pfc );
 
     if ( $ptc == 7 ) {    # Octet String
@@ -50,7 +53,7 @@ sub get_param_val {
     }
     elsif ( $ptc == 5 and $pfc == 2) {    # double precision real
         $val = extract_bitstream( $raw, $offby * 8 + $offbi, $len);
-        $val = unpack('d<',pack('Q',$val));
+        $val = unpack('d<',pack('Q',$val)) if defined($val);
     }
     elsif ( $ptc == 9 ) {                 # Time
         die "Not handled" unless ( $offbi == 0 && $pfc == 18 );
@@ -59,16 +62,17 @@ sub get_param_val {
             my $decoded = $t->parse( substr( $raw, $offby, 7 ) );
             $val = $decoded->{OBT} . "s";
         } else {
-            warn "Not enough bytes to decode CUC time, time will be 0\n";
-            $val=0;
+            mlog "Not enough bytes to decode CUC time\n";
         }
     }
     else {
-        warn "unknown Ptc $ptc for ", $self->pcf->{pcf_descr} , " , returning 0..\n";
-        $val = 0;
+        die "unknown Ptc $ptc for ". $self->pcf->{pcf_descr} . "\n";
     }
-    die "Val was not computed for Parameter of ptc=$ptc,pfc=$pfc" unless defined($val);
-    $val;
+
+    return $val if defined($val);
+    #Raise and alarm and return 0 if undefined (out of bounds)
+    mlog "get_param_val() was not computed for Parameter ". $self->pcf->{pcf_descr}. ", returning 0\n";
+    return 0;
 }
 
 =head1 SYNOPSIS
