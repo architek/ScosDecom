@@ -86,6 +86,7 @@ sub identify {
 
     if (! exists ($tree->{$apid}) ) {
         mlog "Unknown apid $apid\n" ;
+        return ;
     }
 
     #no datafield header
