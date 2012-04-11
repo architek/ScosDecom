@@ -9,7 +9,7 @@ ScosDecom - Module used to decode Ccsds TM/TC based on SCOS Database
 
 =cut
 
-our $VERSION = '0.4';
+our $VERSION = '0.5';
 
 require Exporter;
 our @ISA    = qw(Exporter);
