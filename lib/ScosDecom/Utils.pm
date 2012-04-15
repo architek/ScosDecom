@@ -52,16 +52,18 @@ sub ext_bit { my ( $raw, $off, $len ) = @_;
 
 #
 sub ScosType2BitLen { my ( $ptc, $pfc ) = @_;
-    if ( $ptc == 2 ) { return $pfc; }
+    if    ( $ptc == 2 ) { 
+        return $pfc; 
+    }
     elsif ( $ptc == 3 or $ptc == 4 ) {
-        if ( $pfc == 13 ) { return 24; }
+        if ( $pfc >=0 and $pfc <= 12 ) { return $pfc + 4; }
+        elsif ( $pfc == 13 ) { return 24; }
         elsif ( $pfc == 14 ) { return 32; }
-        elsif ( $pfc >=0 and $pfc <= 12 ) { return $pfc + 4; }
-        else { die "ptc:$ptc,pfc:$pfc not supported by Scos 2000\n"; }
+        else  { die "ptc:$ptc,pfc:$pfc not supported by Scos 2000\n"; }
     }
     elsif ( $ptc == 5 and $pfc == 1) { return 32; }
     elsif ( $ptc == 5 and $pfc == 2) { return 64; }
-    elsif ( $ptc == 7 or $ptc == 8) { return $pfc; }
+    elsif ( $ptc == 7 or  $ptc == 8) { return $pfc; }
     elsif ( $ptc == 9 and $pfc == 18 ) { return 56; }
     die "ptc,pfc $ptc,$pfc not done";
 }

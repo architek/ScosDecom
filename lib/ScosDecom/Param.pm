@@ -47,24 +47,24 @@ sub get_param_val {
         return 0;
     }
 
-    if ( $ptc == 7 ) {    # Octet String
-        $val = unpack( 'H*', substr( $raw, $offby, $pfc ) );
-    }
-    elsif ( $ptc == 8 ) {    # Ascii String
-        $val = unpack( 'A*', substr( $raw, $offby, $pfc ) );
-    }
-    elsif ( $ptc == 2 or $ptc == 3 or $ptc == 4) {    # enum or unsigned or signed
+    if ( $ptc == 2 or $ptc == 3 or $ptc == 4) {    # enum or unsigned or signed
         $val = hex unpack( 'H*' , $val );
         #C2 representation for signed
         $val = -(2**$len - $val) if ( $ptc == 4 and $val&1<<$len-1 );
     }
     elsif ( $ptc == 5 and $pfc == 1) {    # simple precision float
-        $val = unpack('f<',$val);
+        $val = unpack('f',$val);
         warn "raw:" . substr(unpack('H*',$raw),$offby*2,$len/8*2). ", val=$val\n" if $val;
     }
     elsif ( $ptc == 5 and $pfc == 2) {    # double precision real
-        $val = unpack('d<',$val);
+        $val = unpack('d',$val);
         warn "raw:" . substr(unpack('H*',$raw),$offby*2,$len/8*2). ", val=$val\n" if $val;
+    }
+    elsif ( $ptc == 7 ) {    # Octet String
+        $val = unpack( 'H*', substr( $raw, $offby, $pfc ) );
+    }
+    elsif ( $ptc == 8 ) {    # Ascii String
+        $val = unpack( 'A*', substr( $raw, $offby, $pfc ) );
     }
     elsif ( $ptc == 9 and $offbi == 0 and $pfc == 18 ) {  # CUC(4,3) time
         my $t = CUC( 4, 3 );
