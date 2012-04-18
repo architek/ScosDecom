@@ -20,6 +20,8 @@ package ScosDecom::Utils;
 use warnings;
 use strict;
 
+use Ccsds::Utils;
+
 =head1 NAME
 
 Ccsds - Module containing some utilities
