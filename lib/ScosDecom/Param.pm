@@ -31,6 +31,7 @@ use Ccsds::StdTime;
 use ScosDecom::Utils;
 
 has 'mib' => ( is => 'ro' );
+has 'mnemo' => ( is => 'ro' );
 
 #returns val as extracted from raw stream 
 #if not enough bytes or unknown type, returns 0 and logs a warning
@@ -54,11 +55,11 @@ sub get_param_val {
     }
     elsif ( $ptc == 5 and $pfc == 1) {    # simple precision float
         $val = unpack('f',$val);
-        warn "raw:" . substr(unpack('H*',$raw),$offby*2,$len/8*2). ", val=$val\n" if $val;
+        #mlog "raw:" . substr(unpack('H*',$raw),$offby*2,$len/8*2). ", val=$val\n" ;
     }
     elsif ( $ptc == 5 and $pfc == 2) {    # double precision real
         $val = unpack('d',$val);
-        warn "raw:" . substr(unpack('H*',$raw),$offby*2,$len/8*2). ", val=$val\n" if $val;
+        #mlog "raw:" . substr(unpack('H*',$raw),$offby*2,$len/8*2). ", val=$val\n" ;
     }
     elsif ( $ptc == 7 ) {    # Octet String
         $val = unpack( 'H*', substr( $raw, $offby, $pfc ) );

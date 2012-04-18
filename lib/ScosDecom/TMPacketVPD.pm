@@ -55,7 +55,8 @@ sub vpd_decode {
 
         my $p = ScosDecom::TMParam->new(
             mib => $self->mib,
-            pcf => $self->mib->Pcf->fields->{$pname}
+            pcf => $self->mib->Pcf->fields->{$pname},
+	    mnemo => $pname
         );
         %{$res->{$pname}}=();
         my $val = $p->decode(

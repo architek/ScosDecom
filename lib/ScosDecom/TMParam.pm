@@ -32,6 +32,7 @@ use Scalar::Util "looks_like_number";
 use ScosDecom::Cal::StatCal;
 use ScosDecom::Cal::NumCal;
 use ScosDecom::Cal::PolCal;
+use Data::Dumper;
 
 use Mouse;
 extends 'ScosDecom::Param';
@@ -57,13 +58,51 @@ sub get_size {
     return ( $_[0]->pcf->{ptc}, $_[0]->pcf->{pfc} );
 }
 
+#Return cal curve for a TM Parameter
+sub get_curve { my ( $self )=@_;
+
+    my $curve = $self->pcf->{pcf_curtx};
+    #curtx must be emtpy for param found in cur.dat
+    if ( $self->mib->Cur->fields and exists $self->mib->Cur->fields->{ $self->mnemo } ) {
+        if ($curve) {
+            mlog $self->mnemo . " has a curtx and is defined in cur.dat, ignoring cur.dat\n";
+        }
+        else {
+
+            #find calibration curve
+            my ($cal_n,$rel_is_def);
+            my $cal_cond = $self->mib->Cur->fields->{ $self->mnemo };
+
+            foreach ( @{$cal_cond} ) {
+                if ( defined( ::get_tm_val( $_->{cur_rlchk} ) ) ) {
+                    $rel_is_def = 1;
+                }
+                else { 
+                    next; 
+                }
+                if ( $_->{cur_valpar} == ::get_tm_val( $_->{cur_rlchk} ) ) {
+                    $cal_n = $_->{cur_select};
+                    last;
+                }
+            }
+            mlog "Conditionnal Calibration: no rlchk has a value! returning raw \n" 
+                    unless $rel_is_def;
+            if (!defined($cal_n))  {
+                mlog "No matching conditionnal calibration curve found for " . $self->mnemo . "\n";
+            } else { 
+                $curve=$cal_n; 
+            }
+        }
+    }
+    return $curve;
+}
+
 sub to_eng {
     my ( $self, $val ) = @_;
 
     my $eng = $val;
     $eng = sprintf( "0x%X", $val ) if looks_like_number($val);
-
-    my $cur = $self->pcf->{pcf_curtx};
+    my $cur = $self->get_curve;
     if ( $self->pcf->{pcf_categ} eq 'S' ) {
 
         #index is in txf, cal must exist
@@ -77,9 +116,9 @@ sub to_eng {
 
         #index is in caf, mcf or lgf or empty or pcf 6,7,9,10
         #for 7,9,10: no curtx should be found
-        unless ( $self->pcf->{ptc} == 7
-            or $self->pcf->{ptc} == 9
-            or $self->pcf->{ptc} == 10 )
+        if (    $self->pcf->{ptc} != 7
+            and $self->pcf->{ptc} != 9
+            and $self->pcf->{ptc} != 10 )
         {
             if ( exists $self->mib->Caf->fields->{$cur} ) {
                 my $cal =
@@ -101,7 +140,6 @@ sub to_eng {
         #no curtx should be found
     }
 
-    #curtx must be emtpy for param found in cur.dat
     return $eng;
 
 }
