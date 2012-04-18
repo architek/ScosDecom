@@ -31,6 +31,7 @@ use ScosDecom::Db::Caf;
 use ScosDecom::Db::Ccf;
 use ScosDecom::Db::Cdf;
 use ScosDecom::Db::Cpc;
+use ScosDecom::Db::Cur;
 use ScosDecom::Db::Mcf;
 use ScosDecom::Db::Pcf;
 use ScosDecom::Db::Pic;
@@ -45,6 +46,7 @@ has 'Caf'  => ( is => 'rw', builder => '_build_Caf' );
 has 'Ccf'  => ( is => 'rw', builder => '_build_Ccf' );
 has 'Cdf'  => ( is => 'rw', builder => '_build_Cdf' );
 has 'Cpc'  => ( is => 'rw', builder => '_build_Cpc' );
+has 'Cur'  => ( is => 'rw', builder => '_build_Cur' );
 has 'Mcf'  => ( is => 'rw', builder => '_build_Mcf' );
 has 'Pcf'  => ( is => 'rw', builder => '_build_Pcf' );
 has 'Pic'  => ( is => 'rw', builder => '_build_Pic' );
@@ -59,6 +61,7 @@ sub _build_Caf  { ScosDecom::Db::Caf->new }
 sub _build_Ccf  { ScosDecom::Db::Ccf->new }
 sub _build_Cdf  { ScosDecom::Db::Cdf->new }
 sub _build_Cpc  { ScosDecom::Db::Cpc->new }
+sub _build_Cur  { ScosDecom::Db::Cur->new }
 sub _build_Mcf  { ScosDecom::Db::Mcf->new }
 sub _build_Pcf  { ScosDecom::Db::Pcf->new }
 sub _build_Pic  { ScosDecom::Db::Pic->new }
