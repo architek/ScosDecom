@@ -20,107 +20,73 @@ package ScosDecom::Utils;
 use warnings;
 use strict;
 
+use Ccsds::Utils;
+
 =head1 NAME
 
 Ccsds - Module containing some utilities
 
 =cut
 
-#Simple Global Accumulator
 my $log;
+#
+#Gobal Log to app
+sub clrlog { 
+    $log="" 
+}
 
-sub clrlog { $log="" }
-sub mlog { $log .= shift if defined($_[0]); $log; }
+sub mlog { 
+    $log .= shift if $_[0] ;
+    $log ;
+}
 
+#
 #Binary to decimal converter
 sub bin2dec { return unpack( "N", pack( "B32", substr( "0" x 32 . shift, -32 ) ) ); }
 
-#extract bitstream from raw
-#in: off and len are in bits, sign = 1 for signed values (2s complement)
-#out: Undef if out of bound, Big endian value otherwise
-sub extract_bitstream {
-    my ( $raw, $off, $len, $sign ) = @_;
+#
+#Extract bitstream or undef if too short
+sub ext_bit { my ( $raw, $off, $len , $debug) = @_;
+    #Convert to byte bounded binary representation
+    my $braw=unpack('B*',$raw);
 
-    #inclusive offset
-    my $off2i = $off + $len - 1;
-    my ( $from, $to ) = map { int( $_ / 8 ) } ( $off, $off2i );
-    my ( $off_l, $off2_r ) = map { $_ % 8 } ( $off, $off2i );
-    my $n = $to - $from + 1;
-    if ( length($raw) < ($from + $n) ) {
-        use Ccsds::Utils "hdump";
-        mlog "Trying to extract outside packet! raw is:\n". hdump($raw) . "\n";
-        mlog "off=$off,len=$len,offbytes=" . $off/8 . "\n";
+    if ($len+$off>length($braw)) {
+        mlog "Trying to extract outside packet: off=$off,len=$len,offbytes=" . $off/8 . ",raw is:\n" . hdump($raw) . "\n";
         return undef;
     }
-    my $val = substr( $raw, $from, $n );
-
-    #Trim left/right bits
-    my $mask_l = pack( "b8", "1" x ( 8 - $off_l ) );
-    my $mask_r = pack( "B8", "1" x ( $off2_r + 1 ) );
-    substr( $val, 0,  1 ) &= $mask_l ;
-    substr( $val, -1, 1 ) &= $mask_r ;
-    my $num = 0;
-    for ( my $i = 0 ; $i < $n ; $i++ ) {
-
-        $num = $num * 256 + unpack( 'C', substr( $val, $i, 1 ) );
-    }
-
-    #shift to right
-    $num = $num >> 7 - $off2_r ;
-    #2's complement if data to return is signed
-    $num=-(2**$len-$num)
-            if $sign and ($num&1<<$len-1);
-    return $num;
+    return pack( "B*", "0"x(8-$len%8) . substr $braw, $off, $len );
 }
 
-sub ScosType2BitLen {
-    my ( $ptc, $pfc ) = @_;
-    my $len;
 
-    if ( $ptc == 2 ) {
-        $len = $pfc;
+#
+sub ScosType2BitLen { my ( $ptc, $pfc ) = @_;
+    if    ( $ptc == 2 ) { 
+        return $pfc; 
     }
     elsif ( $ptc == 3 or $ptc == 4 ) {
-        if ( $pfc == 13 ) {
-            $len = 24;
-        }
-        elsif ( $pfc == 14 ) {
-            $len = 32;
-        }
-        elsif ( $pfc <= 12 ) {
-            $len = $pfc + 4;
-        }
-        else {
-            die "ptc:$ptc,pfc:$pfc not supported by Scos 2000\n";
-        }
+        if ( $pfc >=0 and $pfc <= 12 ) { return $pfc + 4; }
+        elsif ( $pfc == 13 ) { return 24; }
+        elsif ( $pfc == 14 ) { return 32; }
+        else  { die "ptc:$ptc,pfc:$pfc not supported by Scos 2000\n"; }
     }
-    elsif ( $ptc == 5 and $pfc == 1) {
-        $len=32;
-    }
-    elsif ( $ptc == 5 and $pfc == 2) {
-        $len=64;
-    }
-    elsif ( $ptc == 7 ) {
-        $len = $pfc;
-    }
-    elsif ( $ptc == 9 and $pfc == 18 ) {
-        $len=56;
-    }
-    else {
-        die "ptc:$ptc,pfc:$pfc not done\n";
-    }
-    $len;
+    elsif ( $ptc == 5 and $pfc == 1) { return 32; }
+    elsif ( $ptc == 5 and $pfc == 2) { return 64; }
+    elsif ( $ptc == 7 or  $ptc == 8) { return $pfc; }
+    elsif ( $ptc == 9 and $pfc == 18 ) { return 56; }
+    die "ptc,pfc $ptc,$pfc not done";
 }
 
+#
 sub tm_get_type_stype {
-    my ($tm) = @_;
+    my ($tm) = shift;
     return unless ( $tm->{'Packet Header'}->{'Packet Id'}->{'DFH Flag'} );
     my $sh = $tm->{'Packet Data Field'}->{'TMSourceSecondaryHeader'};
     return [ $sh->{'Service Type'}, $sh->{'Service Subtype'} ];
 }
 
+#
 sub tc_get_type_stype {
-    my ($tc) = @_;
+    my ($tc) = shift;
     return unless ( $tc->{'Packet Header'}->{'Packet Id'}->{'DFH Flag'} );
     my $sh = $tc->{'Packet Data Field'}->{'TCSourceSecondaryHeader'};
     return [ $sh->{'Service Type'}, $sh->{'Service Subtype'} ];
@@ -129,7 +95,7 @@ sub tc_get_type_stype {
 require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT =
-  qw(clrlog mlog extract_bitstream bin2dec ScosType2BitLen tm_get_type_stype tc_get_type_stype);
+  qw(clrlog mlog ext_bit bin2dec ScosType2BitLen tm_get_type_stype tc_get_type_stype);
 
 =head1 SYNOPSIS
 

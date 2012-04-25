@@ -31,48 +31,57 @@ use Ccsds::StdTime;
 use ScosDecom::Utils;
 
 has 'mib' => ( is => 'ro' );
+has 'mnemo' => ( is => 'ro' );
 
-#returns undef if value could not be extracted due to boundary error
-#or unknown ptc,pfc
+#returns val as extracted from raw stream 
+#if not enough bytes or unknown type, returns 0 and logs a warning
 sub get_param_val {
     my ( $self, $raw, $offby, $offbi ) = @_;
-    my $val;
 
     my ( $ptc, $pfc ) = $self->get_size();
 
     my $len = ScosType2BitLen( $ptc, $pfc );
+    my $val = ext_bit( $raw, $offby * 8 + $offbi, $len );
 
-    if ( $ptc == 7 ) {    # Octet String
-        $val = unpack( 'H*', substr( $raw, $offby, $pfc ) );
+    if (! defined($val) ) { #Raise and alarm and return 0 if undefined (out of bounds)
+        mlog "get_param_val() was not computed for Parameter ". $self->pcf->{pcf_descr}. ", not enough bytes. Returning 0\n";
+        return 0;
     }
-    elsif ( $ptc == 2 || $ptc == 3 ) {    # unsigned
-        $val = extract_bitstream( $raw, $offby * 8 + $offbi, $len );
+
+    if ( $ptc == 2 or $ptc == 3 or $ptc == 4) {    # enum or unsigned or signed
+        $val = hex unpack( 'H*' , $val );
+        #C2 representation for signed
+        $val = -(2**$len - $val) if ( $ptc == 4 and $val&1<<$len-1 );
     }
-    elsif ( $ptc == 4 ) {                 # signed
-        $val = extract_bitstream( $raw, $offby * 8 + $offbi, $len, 1 );
+    elsif ( $ptc == 5 and $pfc == 1) {    # simple precision float
+        $val = unpack('f>',$val);
+        mlog "LKE raw:" . substr(unpack('H*',$raw),$offby*2,$len/8*2). ", val=$val\n" ;
     }
     elsif ( $ptc == 5 and $pfc == 2) {    # double precision real
-        $val = extract_bitstream( $raw, $offby * 8 + $offbi, $len);
-        $val = unpack('d<',pack('Q',$val)) if defined($val);
+        $val = unpack('d>',$val);
+        mlog "LKE raw:" . substr(unpack('H*',$raw),$offby*2,$len/8*2). ", val=$val\n" ;
     }
-    elsif ( $ptc == 9 ) {                 # Time
-        die "Not handled" unless ( $offbi == 0 && $pfc == 18 );
+    elsif ( $ptc == 7 ) {    # Octet String
+        $val = unpack( 'H*', substr( $raw, $offby, $pfc ) );
+    }
+    elsif ( $ptc == 8 ) {    # Ascii String
+        $val = unpack( 'A*', substr( $raw, $offby, $pfc ) );
+    }
+    elsif ( $ptc == 9 and $offbi == 0 and $pfc == 18 ) {  # CUC(4,3) time
         my $t = CUC( 4, 3 );
-        if (length($raw)>=($offby+7)) {
-            my $decoded = $t->parse( substr( $raw, $offby, 7 ) );
-            $val = $decoded->{OBT} . "s";
-        } else {
-            mlog "Not enough bytes to decode CUC time\n";
-        }
+        my $decoded = $t->parse( substr( $raw, $offby, 7 ) );
+        $val = $decoded->{OBT} . "s";
     }
     else {
-        die "unknown Ptc $ptc for ". $self->pcf->{pcf_descr} . "\n";
+        mlog "Unknown Ptc,Pfc $ptc,$pfc for parameter ". $self->pcf->{pcf_descr} . "\n";
     }
 
-    return $val if defined($val);
-    #Raise and alarm and return 0 if undefined (out of bounds)
-    mlog "get_param_val() was not computed for Parameter ". $self->pcf->{pcf_descr}. ", returning 0\n";
-    return 0;
+    if (! defined($val) ) { #Raise and alarm and return 0 if undefined (unpack/pack failed)
+        mlog "get_param_val() was not computed for Parameter ". $self->pcf->{pcf_descr}. ". (un)pack failure. Returning 0\n";
+        return 0;
+    }
+
+    $val;
 }
 
 =head1 SYNOPSIS

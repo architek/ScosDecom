@@ -45,7 +45,7 @@ sub decode {
     #detect tm/tc based on tm->{Packet Header}->{'Packet Id'}->{Apid}->{Pcat}
     if ( $tm->{'Packet Header'}->{'Packet Id'}->{Type} == 0 ) {
         my $spid = $self->identify( $tm, $raw );
-        return { log=>mlog() } unless $spid;
+        return { log=>"Unknown Spid \n" . mlog() } unless $spid;
         if ( exists $self->mib->Plf->fields->{$spid} ) {
             $packet = ScosDecom::TMPacketFix->new(
                 tm  => $tm,
@@ -64,7 +64,7 @@ sub decode {
             );
         }
         else {
-            return { log=>mlog() };
+            return { log=>"Neither in Plf nor in Vpd file \n" . mlog() };
         }
         $res->{packet} = $self->encode_res_pid( $self->mib->Pid->fields->{$spid} );
         tie %{ $res->{params} }, 'Tie::IxHash';
@@ -110,25 +110,21 @@ sub identify {
         if ( !defined($pm) ) {
             return $_->[0] if $_->[1] == 0 and $_->[2] == 0;
         }
-        else {
-            if ( $pm->[0] == -1 ) {
+        else { if ( $pm->[0] == -1 ) {
                 return $_->[0];
             }
-            elsif (
-                $_->[1] == extract_bitstream( $raw, 8 * $pm->[0], $pm->[1] ) )
+            elsif ( $_->[1] == hex unpack('H*',ext_bit( $raw, 8 * $pm->[0], $pm->[1] ) ) )
             {
                 if ( $pm->[2] == -1 ) {
                     return $_->[0];
                 }
-                elsif ( $_->[2] ==
-                    extract_bitstream( $raw, 8 * $pm->[2], $pm->[3] ) )
+                elsif ( $_->[2] == hex unpack('H*',ext_bit( $raw, 8 * $pm->[2], $pm->[3] ) ))
                 {
                     return $_->[0];
                 }
             }
         }
     }
-    return;
 }
 
 sub encode_res_pid {

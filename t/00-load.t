@@ -1,6 +1,6 @@
 #!perl -T
 
-use Test::More tests => 33;
+use Test::More tests => 34;
 
 BEGIN {
     use_ok('ScosDecom')                || print 'Bail out!  ';
@@ -34,6 +34,7 @@ BEGIN {
     use_ok('ScosDecom::Db::Pcf')       || print 'Bail out!  ';
     use_ok('ScosDecom::Db::Plf')       || print 'Bail out!  ';
     use_ok('ScosDecom::Db::Caf')       || print 'Bail out!  ';
+    use_ok('ScosDecom::Db::Cur')       || print 'Bail out!  ';
     use_ok('ScosDecom::TCPacket')      || print 'Bail out!  ';
     use_ok('ScosDecom::TMPacket')      || print 'Bail out!  ';
 }

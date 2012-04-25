@@ -36,4 +36,5 @@ lib/ScosDecom/Db/Cdf.pm
 lib/ScosDecom/Db/Txp.pm
 lib/ScosDecom/Db/Txf.pm
 lib/ScosDecom/Db/Caf.pm
+lib/ScosDecom/Db/Cur.pm
 #
