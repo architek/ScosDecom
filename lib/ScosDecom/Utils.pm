@@ -32,7 +32,7 @@ my $log;
 #
 #Gobal Log to app
 sub clrlog { 
-    $log="" 
+    undef $log;
 }
 
 sub mlog { 
