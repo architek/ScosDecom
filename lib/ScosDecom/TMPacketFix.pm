@@ -36,6 +36,8 @@ has 'plf' => ( is => 'ro' );
 sub decode {
     my ( $self, $res ) = @_;
 
+    my %lazy;
+
     for my $param ( @{ $self->plf } ) {
         die unless $param->{plf_nbocc} == 1;
 
@@ -44,9 +46,18 @@ sub decode {
         my $p = ScosDecom::TMParam->new( mib => $self->mib, pcf => $self->mib->Pcf->fields->{ $param->{plf_name} }, mnemo=>$param->{plf_name} );
 
         %{$res->{$param->{plf_name}}}=();
-        $p->decode( $self->raw, $param->{plf_offby}, $param->{plf_offbi},
-            $res->{ $param->{plf_name} } );
+        $p->decode( $self->raw, $param->{plf_offby}, $param->{plf_offbi}, $res->{ $param->{plf_name} } );
+        $lazy{$res->{$param->{plf_name}}}=1 if $res->{$param->{plf_name}}->{e_val} eq "lazy";
 
+    }
+    #Lazy solve for param depending on others
+    for my $param ( @{ $self->plf } ) {
+        next if $self->mib->is_tm_ignored($param->{plf_name});
+        next unless exists $lazy{$res->{$param->{plf_name}}};
+        my $p = ScosDecom::TMParam->new( mib => $self->mib, pcf => $self->mib->Pcf->fields->{ $param->{plf_name} }, mnemo=>$param->{plf_name} );
+        #Pass whole packet
+        $p->decode( $self->raw, $param->{plf_offby}, $param->{plf_offbi}, $res->{ $param->{plf_name} } , $res);
+        #warn "Lazy for ", $param->{plf_name};
     }
     return $res;
 }

@@ -41,11 +41,13 @@ has 'pcf' => ( is => 'ro' );
 
 #res is to output results to the caller
 #return val is used for repetition counters to make it easier
+#last argument is the whole packet needed for solving lazy tm params (tm params depending on others)
+#this allows taking into account already computed values within the packet
 sub decode {
-    my ( $self, $raw, $offby, $offbi, $res ) = @_;
+    my ( $self, $raw, $offby, $offbi, $res, $packet ) = @_;
 
     my $val = $self->get_param_val( $raw, $offby, $offbi );
-    my $e_val = $self->to_eng($val);
+    my $e_val = $self->to_eng($val, $packet);
 
     $res->{descr} = $self->pcf->{pcf_descr};
     $res->{e_val} = $e_val;
@@ -58,8 +60,16 @@ sub get_size {
     return ( $_[0]->pcf->{ptc}, $_[0]->pcf->{pfc} );
 }
 
+sub get_tm_val { my ( $mnemo, $packet) = @_;
+    if (exists ($packet->{$mnemo})) {
+        return $packet->{$mnemo}->{val};
+    } else {
+        return ::get_tm_val( $mnemo );
+    }
+}
+
 #Return cal curve for a TM Parameter
-sub get_curve { my ( $self )=@_;
+sub get_curve { my ( $self , $packet)=@_;
 
     my $curve = $self->pcf->{pcf_curtx};
     #curtx must be emtpy for param found in cur.dat
@@ -68,15 +78,16 @@ sub get_curve { my ( $self )=@_;
             mlog $self->mnemo . " has a curtx and is defined in cur.dat, ignoring cur.dat\n";
         }
         else {
-
+            #if first pass, set lazy otherwise proceed
+            if (!$packet) { $self->{lazy}=1; return; }
             #find calibration curve
             my ($cal_n,$rel_is_def);
             my $cal_cond = $self->mib->Cur->fields->{ $self->mnemo };
 
             foreach ( @{$cal_cond} ) {
-                next unless defined ( ::get_tm_val( $_->{cur_rlchk} ) );
+                next unless defined ( get_tm_val( $_->{cur_rlchk} , $packet) );
                 $rel_is_def = 1;
-                if ( $_->{cur_valpar} == ::get_tm_val( $_->{cur_rlchk} ) ) {
+                if ( $_->{cur_valpar} == get_tm_val( $_->{cur_rlchk} , $packet) ) {
                     $cal_n = $_->{cur_select};
                     last;
                 }
@@ -93,11 +104,13 @@ sub get_curve { my ( $self )=@_;
 }
 
 sub to_eng {
-    my ( $self, $val ) = @_;
+    my ( $self, $val , $packet) = @_;
 
     my $eng = $val;
     $eng = sprintf( "0x%X", $val ) if looks_like_number($val);
-    my $cur = $self->get_curve;
+    my $cur = $self->get_curve( $packet );
+    return "lazy" if exists $self->{lazy};
+
     if ( $self->pcf->{pcf_categ} eq 'S' ) {
         #index is in txf, cal must exist
         my $cal = ScosDecom::Cal::StatCal->new( txp => $self->mib->Txp->fields->{$cur} );

@@ -45,7 +45,7 @@ sub decode {
     #detect tm/tc based on tm->{Packet Header}->{'Packet Id'}->{Apid}->{Pcat}
     if ( $tm->{'Packet Header'}->{'Packet Id'}->{Type} == 0 ) {
         my $spid = $self->identify( $tm, $raw );
-        return { log=>"Unknown Spid \n" . mlog() } unless $spid;
+        return { log=>"Unknown Spid \n" } unless $spid;
         if ( exists $self->mib->Plf->fields->{$spid} ) {
             $packet = ScosDecom::TMPacketFix->new(
                 tm  => $tm,
@@ -69,7 +69,7 @@ sub decode {
         $res->{packet} = $self->encode_res_pid( $self->mib->Pid->fields->{$spid} );
         tie %{ $res->{params} }, 'Tie::IxHash';
         $packet->decode( $res->{params} );
-        $res->{log}=mlog();
+        $res->{log}=mlog() if mlog();
         return $res;
     } elsif ($tm->{'Packet Header'}->{'Packet Id'}->{Type} = 1) {
     }
