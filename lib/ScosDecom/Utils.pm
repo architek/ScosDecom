@@ -28,11 +28,17 @@ Ccsds - Module containing some utilities
 
 =cut
 
-#
-#Simple Global Accumulator
 my $log;
-sub clrlog { $log="" }
-sub mlog { $log .= shift if defined($_[0]); $log; }
+#
+#Gobal Log to app
+sub clrlog { 
+    $log="" 
+}
+
+sub mlog { 
+    $log .= shift if $_[0] ;
+    $log ;
+}
 
 #
 #Binary to decimal converter
@@ -40,7 +46,7 @@ sub bin2dec { return unpack( "N", pack( "B32", substr( "0" x 32 . shift, -32 ) )
 
 #
 #Extract bitstream or undef if too short
-sub ext_bit { my ( $raw, $off, $len ) = @_;
+sub ext_bit { my ( $raw, $off, $len , $debug) = @_;
     #Convert to byte bounded binary representation
     my $braw=unpack('B*',$raw);
 
