@@ -54,12 +54,14 @@ sub get_param_val {
         $val = -(2**$len - $val) if ( $ptc == 4 and $val&1<<$len-1 );
     }
     elsif ( $ptc == 5 and $pfc == 1) {    # simple precision float
+        #mlog "LKE ext_bit:" . unpack('H*',$val) . "\n" ;
         $val = unpack('f>',$val);
-        mlog "LKE raw:" . substr(unpack('H*',$raw),$offby*2,$len/8*2). ", val=$val\n" ;
+        #mlog "LKE raw:" . substr(unpack('H*',$raw),$offby*2,$len/8*2). ", val=$val\n" ;
     }
     elsif ( $ptc == 5 and $pfc == 2) {    # double precision real
+        #mlog "LKE ext_bit:" . unpack('H*',$val) . "\n" ;
         $val = unpack('d>',$val);
-        mlog "LKE raw:" . substr(unpack('H*',$raw),$offby*2,$len/8*2). ", val=$val\n" ;
+        #mlog "LKE raw:" . substr(unpack('H*',$raw),$offby*2,$len/8*2). ", val=$val\n" ;
     }
     elsif ( $ptc == 7 ) {    # Octet String
         $val = unpack( 'H*', substr( $raw, $offby, $pfc ) );

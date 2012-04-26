@@ -47,6 +47,8 @@ sub bin2dec { return unpack( "N", pack( "B32", substr( "0" x 32 . shift, -32 ) )
 #
 #Extract bitstream or undef if too short
 sub ext_bit { my ( $raw, $off, $len , $debug) = @_;
+    #Smaller above 8 multiple
+    my $mult_len=8*int(($len+7)/8);
     #Convert to byte bounded binary representation
     my $braw=unpack('B*',$raw);
 
@@ -54,7 +56,8 @@ sub ext_bit { my ( $raw, $off, $len , $debug) = @_;
         mlog "Trying to extract outside packet: off=$off,len=$len,offbytes=" . $off/8 . ",raw is:\n" . hdump($raw) . "\n";
         return undef;
     }
-    return pack( "B*", "0"x(8-$len%8) . substr $braw, $off, $len );
+    #left pad with 0 for B* packing
+    return pack( "B*", substr( "0" x 7 . substr($braw, $off, $len ) , -$mult_len) );
 }
 
 
