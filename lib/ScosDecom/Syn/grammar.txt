@@ -1,0 +1,82 @@
+Script: 
+"{" StatementSequence "}"
+
+------ Statements
+----------------------------------------------
+
+StatementSequence:
+Statement StatementSequence
+|
+Statement
+
+Statement: 
+";"
+|
+AssignStatement ";"
+|
+IfStatement ";"
+|
+Expression ";"
+|
+ReturnStatement ";"
+
+
+AssignStatement:
+Variable ":=" Expression
+
+IfStatement:
+"If" Expression "then"
+ElseStatement
+"endif"
+
+
+----- Expressions
+----------------------------------------------
+
+Expression:
+SimpleExpression
+|
+SimpleExpression RelOp SimpleExpression
+
+SimpleExpression:
+[sign] Term 
+|
+[sign] Term AdditionOpe Term
+
+Term:
+Factor
+|
+Factor MultOpe Factor
+
+Factor:
+Variable
+|
+TM
+|
+Number
+|
+String
+|
+"(" Expression ")"
+
+RelOp:
+"=" | "<>" | "<" | "<=" | ">" | ">="
+
+AdditionOpe:
+"+" | "-" | "or"
+
+MultOpe:
+"*" | "/" | "**" | "%" | "%%" | "and" | "not"
+
+Variable:
+VAR([A-Za-z0-9])*
+|
+GVAR([A-Za-z0-9])*
+
+TM:
+[A-Z][A-Za-z0-9]*
+|
+[A-Z][A-Za-z0-9]*[.RAW|.ENG]
+
+Number:
+[0-9.]+
