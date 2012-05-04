@@ -25,10 +25,13 @@ AssignStatement:
 Variable ":=" Expression
 
 IfStatement:
-"If" Expression "then"
-ElseStatement
+"if" Expression "then"
+[ElseStatement]?
 "endif"
 
+ElseStatement:
+"else"
+StatementSequence
 
 ----- Expressions
 ----------------------------------------------
