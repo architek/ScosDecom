@@ -24,7 +24,7 @@ AssignStatement:
 Variable ":=" Expression
 
 IfStatement:
-"if" Expression "then"
+"if" IfExpression "then"
 [ElseStatement]?
 "endif"
 
@@ -51,6 +51,13 @@ SimpleExpression:
 StringExpression:
 String
 
+IfExpression:
+Expression
+|
+Variable "==" StringExpression
+|
+TM "==" StringExpression
+
 Term:
 Factor
 |
@@ -66,7 +73,7 @@ Number
 "(" Expression ")"
 
 RelOp:
-"=" | "<>" | "<" | "<=" | ">" | ">="
+"==" | "<>" | "<" | "<=" | ">" | ">="
 
 AdditionOpe:
 "+" | "-" | "or"
