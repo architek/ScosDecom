@@ -43,19 +43,9 @@ SimpleExpression
 |
 SimpleExpression RelOp SimpleExpression
 |
-String
-|
-StringExpression "==" StringExpression
 
 SimpleExpression:
 [sign] Term [AdditionOpe Term]
-
-StringExpression:
-String
-|
-Var
-|
-TM
 
 Term:
 Factor
@@ -66,6 +56,8 @@ Factor:
 Variable
 |
 TM
+|
+String
 |
 Number
 |
