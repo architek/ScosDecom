@@ -1,4 +1,4 @@
-Script: 
+Script:
 "{" StatementSequence "}"
 
 ------ Statements
@@ -9,7 +9,7 @@ Statement StatementSequence
 |
 Statement
 
-Statement: 
+Statement:
 ";"
 |
 AssignStatement ";"
@@ -19,7 +19,6 @@ IfStatement ";"
 Expression ";"
 |
 ReturnStatement ";"
-
 
 AssignStatement:
 Variable ":=" Expression
@@ -33,6 +32,9 @@ ElseStatement:
 "else"
 StatementSequence
 
+ReturnStatement:
+"return" "(" Expression ")"
+
 ----- Expressions
 ----------------------------------------------
 
@@ -40,11 +42,14 @@ Expression:
 SimpleExpression
 |
 SimpleExpression RelOp SimpleExpression
+|
+StringExpression
 
 SimpleExpression:
-[sign] Term 
-|
-[sign] Term AdditionOpe Term
+[sign] Term [AdditionOpe Term]
+
+StringExpression:
+String
 
 Term:
 Factor
@@ -57,8 +62,6 @@ Variable
 TM
 |
 Number
-|
-String
 |
 "(" Expression ")"
 
@@ -82,4 +85,7 @@ TM:
 [A-Z][A-Za-z0-9]*[.RAW|.ENG]
 
 Number:
-[0-9.]+
+[0-9.]+[ [e|E] [0-9]+ ]
+
+String:
+["][A-Z]*["]
