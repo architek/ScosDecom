@@ -74,7 +74,7 @@ sub ScosType2BitLen { my ( $ptc, $pfc ) = @_;
     }
     elsif ( $ptc == 5 and $pfc == 1) { return 32; }
     elsif ( $ptc == 5 and $pfc == 2) { return 64; }
-    elsif ( $ptc == 7 or  $ptc == 8) { return $pfc; }
+    elsif ( $ptc == 7 or  $ptc == 8) { return 8*$pfc; }
     elsif ( $ptc == 9 and $pfc == 18 ) { return 56; }
     die "ptc,pfc $ptc,$pfc not done";
 }
@@ -95,10 +95,19 @@ sub tc_get_type_stype {
     return [ $sh->{'Service Type'}, $sh->{'Service Subtype'} ];
 }
 
+sub spid_by_descr {
+	my ($mib,$desc)=@_;
+	my $pid=$mib->Pid->fields;
+	for my $spid (keys %{$pid}) {
+		return $spid if $pid->{$spid}->{pid_descr} eq $desc;
+	}
+	return undef;
+}
+
 require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT =
-  qw(clrlog mlog ext_bit bin2dec ScosType2BitLen tm_get_type_stype tc_get_type_stype);
+  qw(clrlog mlog ext_bit bin2dec ScosType2BitLen tm_get_type_stype tc_get_type_stype spid_by_descr);
 
 =head1 SYNOPSIS
 
