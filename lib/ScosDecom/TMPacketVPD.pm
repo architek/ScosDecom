@@ -28,6 +28,8 @@ TMPacketVPD
 
 use Mouse;
 extends 'ScosDecom::TMPacket';
+use Tie::IxHash;
+
 use ScosDecom::TMParam;
 use ScosDecom::Utils;
 
@@ -39,8 +41,7 @@ sub decode {
     my ( $self, $res ) = @_;
 
     #first parameter is to be found after the dfh
-    $self->vpd_off_bin(
-        8 * $self->mib->Pid->fields->{ $self->spid }->{pid_dfhsize} );
+    $self->vpd_off_bin( 8 * $self->mib->Pid->fields->{ $self->spid }->{pid_dfhsize} );
 
     #Start recursive decoding beginning with head of the tree
     $self->vpd_decode( $self->vpd, $res );
@@ -54,30 +55,21 @@ sub vpd_decode {
         my $pname = $vpdl->{vpd_name};
 
         my $p = ScosDecom::TMParam->new(
-            mib => $self->mib,
-            pcf => $self->mib->Pcf->fields->{$pname},
-	    mnemo => $pname
+            mib   => $self->mib,
+            pcf   => $self->mib->Pcf->fields->{$pname},
+            mnemo => $pname
         );
-        %{$res->{$pname}}=();
-        my $val = $p->decode(
-            $self->raw,
-            int( $self->{vpd_off_bin} / 8 ),
-            $self->{vpd_off_bin} % 8,
-            $res->{$pname}
-        );
-        $self->{vpd_off_bin} += ScosType2BitLen(
-            $self->mib->Pcf->fields->{$pname}->{ptc},
-            $self->mib->Pcf->fields->{$pname}->{pfc}
-        );
+        %{ $res->{$pname} } = ();
+        my $val = $p->decode( $self->raw, int( $self->{vpd_off_bin} / 8 ), $self->{vpd_off_bin} % 8, $res->{$pname} );
+        $self->{vpd_off_bin} += ScosType2BitLen( $self->mib->Pcf->fields->{$pname}->{ptc}, $self->mib->Pcf->fields->{$pname}->{pfc} );
 
         if ( $vpdl->{vpd_grpsize} > 0 ) {
 
             #As repeated parameters might have the same name, we need an array
             $res->{$pname}->{params} = [];
             for ( 0 .. ( $val - 1 ) ) {
-                $res->{$pname}->{params}->[$_] = {};
-                $self->vpd_decode( $vpdl->{vpd_tree},
-                    $res->{$pname}->{params}->[$_] );
+                tie %{ $res->{$pname}->{params}->[$_] } , 'Tie::IxHash';
+                $self->vpd_decode( $vpdl->{vpd_tree}, $res->{$pname}->{params}->[$_] );
             }
         }
     }
