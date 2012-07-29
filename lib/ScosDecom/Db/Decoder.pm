@@ -64,7 +64,7 @@ sub decode {
             );
         }
         else {
-            return { log=>"Neither in Plf nor in Vpd file \n" . mlog() };
+            return { log=>"Neither in Plf nor in Vpd file . This can happen for packet with no data field\n" . mlog() };
         }
         $res->{packet} = $self->encode_res_pid( $self->mib->Pid->fields->{$spid} );
         tie %{ $res->{params} }, 'Tie::IxHash';
