@@ -60,6 +60,8 @@ sub vpd_decode {
             mnemo => $pname
         );
         %{ $res->{$pname} } = ();
+        $self->{vpd_off_bin}+=$vpdl->{vpd_offset};
+
         my $val = $p->decode( $self->raw, int( $self->{vpd_off_bin} / 8 ), $self->{vpd_off_bin} % 8, $res->{$pname} );
         $self->{vpd_off_bin} += ScosType2BitLen( $self->mib->Pcf->fields->{$pname}->{ptc}, $self->mib->Pcf->fields->{$pname}->{pfc} );
 
