@@ -4,12 +4,10 @@ README.pod
 lib/ScosDecom.pm
 lib/ScosDecom/Db/Decoder.pm
 lib/ScosDecom/Packet.pm
-lib/ScosDecom/TCPacket.pm
 lib/ScosDecom/TMPacket.pm
 lib/ScosDecom/TMPacketFix.pm
 lib/ScosDecom/TMPacketVPD.pm
 lib/ScosDecom/Param.pm
-lib/ScosDecom/TCParam.pm
 lib/ScosDecom/TMParam.pm
 lib/ScosDecom/Utils.pm
 #
