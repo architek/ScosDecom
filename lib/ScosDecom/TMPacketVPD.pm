@@ -53,6 +53,7 @@ sub vpd_decode {
 
     for my $vpdl (@$vpd) {
         my $pname = $vpdl->{vpd_name};
+        die "VPD was not found" unless $pname;
 
         my $p = ScosDecom::TMParam->new(
             mib   => $self->mib,
