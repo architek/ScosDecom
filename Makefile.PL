@@ -9,6 +9,7 @@ build_requires 'Test::More';
 requires 'Math::Interpolate' => '0';
 requires 'Mouse'             => '0';
 requires 'Ccsds'             => '0';
+requires 'Tie::IxHash'       => '0';
 
 test => {
     TESTS =>
