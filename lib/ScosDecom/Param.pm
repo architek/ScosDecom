@@ -33,35 +33,20 @@ use ScosDecom::Utils;
 has 'mib' => ( is => 'ro' );
 has 'mnemo' => ( is => 'ro' );
 
-#returns val as extracted from raw stream 
-#if not enough bytes or unknown type, returns 0 and logs a warning
-sub get_param_val {
-    my ( $self, $raw, $offby, $offbi ) = @_;
-
-    my ( $ptc, $pfc ) = $self->get_size();
-
-    my $len = ScosType2BitLen( $ptc, $pfc );
-    my $val = ext_bit( $raw, $offby * 8 + $offbi, $len );
-
-    if (! defined($val) ) { #Raise and alarm and return 0 if undefined (out of bounds)
-        mlog "get_param_val() was not computed for Parameter ". $self->pcf->{pcf_descr}. ", not enough bytes. Returning 0\n";
-        return 0;
-    }
-
+sub calc_val {
+    my ($self,$val,$ptc,$pfc,$raw,$offby,$offbi)=@_;
+    
     if ( $ptc == 2 or $ptc == 3 or $ptc == 4) {    # enum or unsigned or signed
         $val = hex unpack( 'H*' , $val );
+        my $len = ScosType2BitLen( $ptc, $pfc );
         #C2 representation for signed
         $val = -(2**$len - $val) if ( $ptc == 4 and $val&1<<$len-1 );
     }
     elsif ( $ptc == 5 and $pfc == 1) {    # simple precision float
-        #mlog "LKE ext_bit:" . unpack('H*',$val) . "\n" ;
         $val = unpack('f>',$val);
-        #mlog "LKE raw:" . substr(unpack('H*',$raw),$offby*2,$len/8*2). ", val=$val\n" ;
     }
     elsif ( $ptc == 5 and $pfc == 2) {    # double precision real
-        #mlog "LKE ext_bit:" . unpack('H*',$val) . "\n" ;
         $val = unpack('d>',$val);
-        #mlog "LKE raw:" . substr(unpack('H*',$raw),$offby*2,$len/8*2). ", val=$val\n" ;
     }
     elsif ( $ptc == 7 ) {    # Octet String
         $val = unpack( 'H*', substr( $raw, $offby, $pfc ) );
@@ -84,6 +69,25 @@ sub get_param_val {
     }
 
     $val;
+
+}
+
+#returns val as extracted from raw stream 
+#if not enough bytes or unknown type, returns 0 and logs a warning
+sub get_param_val {
+    my ( $self, $raw, $offby, $offbi ) = @_;
+
+    my ( $ptc, $pfc ) = $self->get_size();
+
+    my $len = ScosType2BitLen( $ptc, $pfc );
+    my $val = ext_bit( $raw, $offby * 8 + $offbi, $len );
+
+    if (! defined($val) ) { #Raise and alarm and return 0 if undefined (out of bounds)
+        mlog "get_param_val() was not computed for Parameter ". $self->pcf->{pcf_descr}. ", not enough bytes. Returning 0\n";
+        return 0;
+    }
+    return $self->calc_val($val,$ptc,$pfc,$raw,$offby,$offbi);
+
 }
 
 =head1 SYNOPSIS
