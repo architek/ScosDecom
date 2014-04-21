@@ -1,12 +1,11 @@
 #!perl -T
 
-use Test::More tests => 34;
+use Test::More tests => 32;
 
 BEGIN {
     use_ok('ScosDecom')                || print 'Bail out!  ';
     use_ok('ScosDecom::TMPacketVPD')   || print 'Bail out!  ';
     use_ok('ScosDecom::Param')         || print 'Bail out!  ';
-    use_ok('ScosDecom::TCParam')       || print 'Bail out!  ';
     use_ok('ScosDecom::Packet')        || print 'Bail out!  ';
     use_ok('ScosDecom::Cal::PolCal')   || print 'Bail out!  ';
     use_ok('ScosDecom::Cal::NumCal')   || print 'Bail out!  ';
@@ -35,7 +34,6 @@ BEGIN {
     use_ok('ScosDecom::Db::Plf')       || print 'Bail out!  ';
     use_ok('ScosDecom::Db::Caf')       || print 'Bail out!  ';
     use_ok('ScosDecom::Db::Cur')       || print 'Bail out!  ';
-    use_ok('ScosDecom::TCPacket')      || print 'Bail out!  ';
     use_ok('ScosDecom::TMPacket')      || print 'Bail out!  ';
 }
 
